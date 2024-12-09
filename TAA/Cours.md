@@ -75,3 +75,39 @@
 						- Si on est plus intéressé par la classe +
 				- ==> Ne pas évaluer les modèles sur un échantillon équilibré
 				- ==> Les anomalies sont souvent complètement nouvelle ==> Le modèle ne pourra pas détecter les nouvelles anomalies sur lesquelles il n'a pas été entraîné
+---
+
+# ==Fouilles des données textuelles==
+- # Introduction
+	- Processus d'extraction non triviale d'info utiles inconnues a priori à partir de grands volumes de textes
+- # Préparation des données
+	- ## Pré-traitement des données textuelles
+		- Uniformisation du codage, élimination éventuelle de ceraines caractèe spéciaux
+	- ## Extraction d'informations
+		- Suppression des mot ignorés
+	- ## Extraction d'entités primaires
+	- ## Étiquetage grammaticale
+	- ## Extraction d'entités nommées
+		- Nom de personnes, lieux, organisation, dates qui ont un role important 
+- # Exploitation
+	- ## Représentation vectorielle des textes
+		- Elle prend les mot qui apparaisse le plus dans me texte mais ne prend pas en compte le contexte la grammaire et syntaxe ==> On perds beaucoup d'info
+		- Comparaison des vecteurs avec la distance cosinus :
+			- Le norme du vecteur étant proportionnelle à la longueur du texte
+		- On utilise parfois la similarité cosinus
+		- .......
+		- Évolutions de la représentation vectorielle de base
+			- Pondération des termes : TF-IDF
+				- Pondération les termes selon leur importance déterminé dans le texte
+				- On utilise le TF (Term Frequency) dans le document
+				- On multiplie le TD par IDF (Inverse Document Frequency) 
+					- C'est l'importance d'un terme pour tous les documents ..........
+					- Concept du LSA (=Latent Semantic Analysis)
+						- ........
+			- Sélection des termes : 
+			- 
+	- ## Développement de modèles
+	- ## Utilisation des modèles
+- # Challenges
+	- ## Résolution référentielle
+	- ## Analyse syntaxique (générale ou spécifique)
