@@ -1260,58 +1260,57 @@ Fablet 2023-2024
 
 - ### **Question 4 : Analyse avec hierfstat**
 	- #### a) **Explication de l’analyse et des calculs** :
+		- ![[Pasted image 20241209182702.png]]
 		- Pour obtenir ces valeurs, on a réalisé une ANOVA hiérarchique (méthode des moment de Cockerham ou AMOVA si normalité non respecté) des fréquence alléliques, en décomposant les effets :
 			- a -> Effet de la sous population
 			- b -> Effet de l'individus
 			- w -> Effet intra(individu)
 		- La partie `$overall` présente la variance totale (individus, populations, erreurs).
 		- La partie `$F` décompose cette variance pour calculer des indices F (Fst, Fit, Fis) : 
-		- $F_{\text{st}} = \frac{\text{Var(pop)}}{\text{Var(total)}} = 0.014$
-		- $F_{\text{it}} = \frac{\text{Var(ind)}}{\text{Var(total)}}​ = 0.09$
-		- $F_{\text{is}} = \frac{\text{Var(ind)}}{\text{Var(pop)}} = 0.08​$
+		- $F_{{it}}​ = \frac{\sigma²_{pop} + \sigma²_{ind}}{\sigma²_{pop} + \sigma²_{ind} +\sigma²_{error}} = \frac{9.491374 + 1.505261}{9.491374 + 1.505261 + 104.861109} = 0.0949$
+			- Proportion de la variance génétique totale qui est due à la différenciation entre individus, sans tenir compte des populations.
+			- Plus FIT​ est élevé, plus les individus dans l'ensemble des populations diffèrent les uns des autres (indépendamment de la population d'origine).
+		- $F_{\text{st}} = \frac{\sigma²_{pop}}{\sigma²_{pop} + \sigma²_{ind} +\sigma²_{error}} = \frac{9.491374}{9.491374 + 1.505261 + 104.861109} = 0.0819$
+			- Proportion de la variance génétique totale due à la différenciation entre les populations.
+			- **Interprétation :**
+				- FST​ proche de 0 : Les populations ne sont pas différenciées (fort flux génétique).
+				- FST​ proche de 1 : Les populations sont très différenciées (isolement reproductif ou faible flux génétique) ==> Il y a une forte structuration des populations
+		- $F_{\text{is}} = \frac{\sigma²_{ind}}{\sigma²_{ind} +\sigma²_{error}} = \frac{1.505261}{1.505261 + 104.861109} = 0.0141$
+			- Déviation de l'hétérozygotie observée au sein des populations par rapport à l'hétérozygotie attendue sous un équilibre Hardy-Weinberg.
+			- **Interprétation :**
+				- FIS>0 indique un déficit en hétérozygotes dans les populations (inbreeding ou consanguinité locale).
+				- FIS<0 indique un excès d'hétérozygotes (Avantage sélectif pour les hétérozygotes, Lorsque deux ou plusieurs populations, initialement différenciées, se mélangent, et augmentent artificiellement la proportion d'hétérozygotes par rapport à l'équilibre attendu, mutations récentes, assortative mating (Des individus qui préfèrent s'accoupler avec des partenaires génétiquement très différents), Migration et flux génétique important).
+				- FIS=0 signifie que les populations respectent l'équilibre Hardy-Weinberg et donc manmixie.
 	- #### b) **Test de significativité** :
 		- Un test (par permutation ou bootstrap) évalue si le Fst observé est significativement différent de 0.
 			- Permutation
 				- Test de Mantel ==> Principe du test de permutation, on mélange les lignes et colonnes, on détruit les potentielles corrélations on calcul la distribution sous l'hypothèse nulle et on compare avec ce que l'on a pour nos vraie données)
 	- #### c) **Interprétation des résultats** :
+		- $F_{{it}}​ = \frac{\sigma²_{pop} + \sigma²_{ind}}{\sigma²_{pop} + \sigma²_{ind} +\sigma²_{error}} = \frac{9.491374 + 1.505261}{9.491374 + 1.505261 + 104.861109} = 0.0949$
+			- $F_{\text{it}} \ne 0$ --> **Les individus dans l'ensemble des populations semblent différer les uns des autres (indépendamment de la population d'origine)**, (il faut toutefois faire un test de significativité (test de Mantel via permutation ou bootstrap ?) )
+			- On regarde les autres valeurs F pour avoir plus de précision
+		- $F_{\text{st}} = \frac{\sigma²_{pop}}{\sigma²_{pop} + \sigma²_{ind} +\sigma²_{error}} = \frac{9.491374}{9.491374 + 1.505261 + 104.861109} = 0.0819$
+			- **8.19% de la variation génétique totale** est attribuée aux différences entre populations 
+			- $F_{\text{st}}$ est significativement différent de 0 (selon la consigne) --> Il y a donc **significativement peu de flux entre les 2 populations** et les **fréquences alléliques ne sont pas significativement comparables** -->On a donc **2 populations (commerciales et sauvages) avec un génome significativement différent** l'une de l'autre --> **Pas d'introgression/hybridation des colonies commerciales vers les colonies sauvages** --> L'introduction des espèces commerciales n'impacte pas les espèces sauvages
+		- $F_{\text{is}} = \frac{\sigma²_{ind}}{\sigma²_{ind} +\sigma²_{error}} = \frac{1.505261}{1.505261 + 104.861109} = 0.0141​ > 0$
+			- Coefficient de consanguinité/hétérozygotie intra-population
+			- **1.4% de la variation génétique totale** est attribuée aux différences de proportion d'hétérozygote dans les population par rapport aux attentes sous Hardy-Weinberg
+			- $F_{\text{is}} \text{ proche de } 0$ --> Il faut tout de même réaliser un test de significativité mais on peut supposer qu'il y a une **panmixie** = Appariements **aléatoires** des individus = Proportions de **Hardy Weinberg respectées** --> Les espèces commerciales et sauvages s'hybrident entre elles ==> Résultats contradictoires avec le $F_{st}$ ???
+		- ==> Conclusions : On ne peut donc pas conclure que les espèces de frelons commerciaux soient invasives pour les espèces sauvages, car les différentes métriques montrent que les populations sont génétiquement bien différentes et les 2 populations ne s'hybrident pas entre elles.
 		- Un Fst élevé implique une différenciation génétique notable entre populations.
 		- Le $F_{it}$ = 0.09 faible
 			- Différenciation globale (individus par rapport à l’ensemble des populations)
 			- Intègre les 2 autres valeurs, on regarde au globale l'écart, c'est une synthèse globale, difficile à interpréter, il faut regarder le détail des 2 autres valeurs (fis et fst)
 			- Faible écart dans le cadre de Hardy Weinberg on regarde les autres valeurs
 			- Environ **9% de la variation génétique totale** est attribuée à la structure génétique globale.
-		- Ici le $F_{st}$ est faible = 0.014 mais significatif différent de 0
-			- Mesure la proportion de variation génétique qui peut être attribuée aux différences entre populations.
-			- Cela indique que seulement **1,4% de la variation génétique totale** est attribuée aux différences entre populations.
-			- Une faible valeur peut refléter un flux génique important entre populations, mais la significativité (test significatif) montre que ces différences, bien que faibles, sont réelles et détectables
-		- Le $F_{is}$ = 0.08
+		- Le $F_{is}$ = 0.0141
 			- Évalue l'écart par rapport à l'équilibre de Hardy-Weinberg au sein des populations (déficit ou excès d'hétérozygotie).
-			- Un $F_{is} \ne 0$ ==> Panmixie = Appariement aléatoire = Proportion de Hardy Weinerg respecté
-				- Négatif = Évitement d'appariement entre apparenté
-				- Positif = Excès d'appariement entre apparenté
-			- Les populations présentent un déficit en hétérozygotes, indiquant une consanguinité modérée ou des sous-structures au sein des populations.
-			- Un déficit en hétérozygotes est observable dans les populations individuelles.
-				- Cela peut être dû à :
-				    - Une consanguinité locale.
-				    - Des sous-structures génétiques (les individus ne s'accouplent pas aléatoirement).
-		- ==> Les populations commerciales et sauvages sont **faiblement différenciées** génétiquement (Fst=0.014), ce qui pourrait indiquer un **flux génique modéré**, probablement dû à l'introgression depuis les colonies commerciales.
-		- ==> Le déficit en hétérozygotes (Fis=0.08) dans les populations pourrait suggérer une consanguinité modérée au sein des populations sauvages ou commerciales, ou des structures locales dues à des barrières à l'accouplement.
-		- ==> La structure globale (Fit=0.09) reflète une combinaison des effets intra- et inter-populations.
-		- 
-		- $F_{\text{it}} = \frac{\text{Var(ind)}}{\text{Var(total)}}​ = 0.095$
-			- $F_{\text{it}}$ proche de 0 --> **Faible écart globale des populations par rapport aux conditions de Hardy Weinberg**
-			- On regarde les autres valeurs F pour avoir plus de précision
-		- $F_{\text{st}} = \frac{\text{Var(pop)}}{\text{Var(total)}} = 0.014$
-			- **1,4% de la variation génétique totale** est attribuée aux différences entre populations 
-			- $F_{\text{st}}$ proche de 0 mais significativement différent de 0 (selon la consigne) --> Il y a donc **significativement peu de flux entre les 2 populations** et les **fréquences alléliques ne sont pas significativement comparables** --> Bien que ces différences soient assez faibles, on a donc **2 populations (commerciales et sauvages) avec un génome significativement différent** l'une de l'autre --> Pas d'introgression/hybridation des colonies commerciales vers les colonies sauvages
-		- $F_{\text{is}} = \frac{\text{Var(ind)}}{\text{Var(pop)}} = 0.082​ > 0$
-			- Coefficient de consanguinité/hétérozygotie intra-population
-			- **8.2% de la variation génétique totale** est attribuée aux différences de proportion d'hétérozygote dans les population par rapport aux attentes sous Hardy-Weinberg
-			- $F_{\text{is}} \ne 0$ --> Donc **PAS de panmixie** = Appariement **NON aléatoires** des individus = Proportions de **Hardy Weinberg NON respectées** --> Les espèces commerciales et sauvages ne s'hybrident pas entre elles, elles restent bien différenciées
-			- $F_{\text{is}} > 0$ --> **Déficit en hétérozygotes** (car non panmixie) --> **Excès d'appariement entre apparenté** (donc excès d'homozygote)  --> Indique un certain niveau de **consanguinité** --> Les populations sauvages ne se reproduisent qu'entre elles (et pareillement pour les populations commerciales)
-		- ==> Conclusions : On ne peut donc pas conclure que les espèces de frelons commerciaux soient invasives pour les espèces sauvages, car les différentes métriques montrent que les populations sont génétiquement bien différentes et les 2 populations ne s'hybrident pas entre elles.
-
-
+			- Un $F_{is} = 0$, ou proche de 0 ==> Panmixie = Appariement aléatoire = Proportion de Hardy Weinerg respecté
+			- Un $F_{is} \ne 0$ ==> Non Panmixie = Appariement non aléatoire = Proportion de Hardy Weinerg non respecté
+				- Négatif = Évitement d'appariement entre apparenté ==> Excès en hétérozygote et déficit en homozygote 
+					- ==> Avantage sélectif pour les hétérozygotes, Lorsque deux ou plusieurs populations, initialement différenciées, se mélangent, et augmentent artificiellement la proportion d'hétérozygotes par rapport à l'équilibre attendu, mutations récentes, assortative mating (Des individus qui préfèrent s'accoupler avec des partenaires génétiquement très différents), Migration et flux génétique important
+				- Positif = Excès d'appariement entre apparenté ==> Déficit en hétérozygote et excès en homozygote
+					- => Consanguinité locale ou des sous-structures au sein des populations (les individus ne s'accouplent pas aléatoirement).
 - ### **Question 5 : Bilan de la structure génétique**
 	- #### Synthèse des résultats :
 		- Les populations sauvages ne sont pas influencées par l'introduction des populations commerciales
@@ -1649,3 +1648,7 @@ L’attraction des longues branches (LBA) est un artefact phylogénétique dans 
 
 ![[Pasted image 20241208165308.png]]
 ![[Pasted image 20241208165327.png]]
+
+Un site (colonne) d'un alignement multiple est informatifs ssi dans cette colonne :
+- Il n'y a **pas de singleton** (Une des espèces est la seule à avoir une base spécifique à ce site et pas les autres
+- Il y a **au moins 2 espèces/séquences avec des bases différentes** pour ce site 
