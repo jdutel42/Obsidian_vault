@@ -157,6 +157,7 @@
 						- $D_{st}$ : Diversité inter sous pop
 			- #### Le $R_{st}$
 				- ##### Définition
+					- Défini dans le cadre du SMM (=Stepwise Mutation Model) et est alors indépendant du taux de mutation.
 				- ##### Calculs
 					- $$R_{st} = \frac{S - S_w}{S}$$
 						- $S$ : Moyenne des carrés des écarts de taille entre allèles pour toutes les paires d'allèles possibles
@@ -180,6 +181,7 @@
 				- ##### Définition
 					- Sur les données d'haplotypes
 					- Notation générique pour tous les variants de $\bar{F_{st}}$ prenant en compte la distance génétique moléculaire entre allèles
+					- Cf AMOVA
 	- ## Indice $f_{is}$
 		- ### Définition
 			- Mesure l'écart à la panmixie dans les sous population (est ce que les appariements dans les sous population sont non aléatoires ?)
@@ -202,9 +204,8 @@
 			- $$f_{it} = \frac{H_t - \bar{H_i}}{H_t} = \frac{2\bar{p}\bar{q} - \sum(\frac{N_i}{N})*2p_iq_i}{2\bar{p}\bar{q}}$$
 				- $H_t$ : Hétérozygotie totale attendue
 				- $H_s$ : Hétérozygotie attendue si panmixie  
-	- ## AMOVA
+	- ## AMOVA (=Analysis of Molecular Variance)
 		- ### Définition
-			- Analysis of Molecular Variance
 			- Elle fournit des estimation des composantes de la variance et des analogues aux statistiques $F$, notés $\phi$
 			- C'est une ANOVA hiérarchique sur une matrice de distances entre paires d'haplotypes
 			- Cela convient pour tout type de données moléculaires
@@ -1203,7 +1204,7 @@ $$F_{st} = \frac{Variance(p)}{\bar{p}*(1-\bar{p})} = \frac{\frac{1}{2}*(0.43²+0
 		- Hypothèses des modèles : le taux d’évolution est le même dans chaque colonne ==> Or ce n’est pas tout le temps réaliste ==> On doit donc corriger cela : 
 			- On a 2 population qui sont évolutionnairement invariables 
 			- Un autre qui est librement variable 
-		- NNI = Petit pas autour de l’espace des arbres ==> Bien pour raffiner un arbre pour lequel on connait bien on est sur le point de depart 
+		- NNI (=Nearest neihbour insertion) = Petit pas autour de l’espace des arbres ==> Bien pour raffiner un arbre pour lequel on connait bien on est sur le point de depart 
 		- SPR = Grands pas dans l’espace des arbres ==> Pratique si on est pas sur du point de départ mais nul pour raffiner le résultats  
 		- On a un gain de vraisemblance de +730 ==> La distribution gamma est le plus fort contributeur pour le gain de la variance > Puis les invariant > Puis les méthodes d’explo des arbres 
 		- Ce gain de vraisemblance n’est pas additif, certains gains pour chaque paramètre se recoupent entre elles 
@@ -1600,6 +1601,7 @@ L’attraction des longues branches (LBA) est un artefact phylogénétique dans 
     
     - Les modèles qui prennent en compte la variabilité des taux de substitution entre sites (par exemple, **modèles avec distribution gamma**) peuvent réduire l’impact de la LBA.
     - Optez pour des méthodes bayésiennes ou de maximum de vraisemblance plutôt que la parcimonie, qui est plus sensible à la LBA.
+    - Sensibilité au LBA (du pire au mieux : Parcimonie > Distances > Max de vraisemblance et Bayésienne)
 2. **Augmenter le nombre de caractères :**
     
     - Utiliser des alignements contenant davantage de séquences ou de gènes réduit l'effet des biais locaux et améliore la résolution globale.
@@ -1650,5 +1652,30 @@ L’attraction des longues branches (LBA) est un artefact phylogénétique dans 
 ![[Pasted image 20241208165327.png]]
 
 Un site (colonne) d'un alignement multiple est informatifs ssi dans cette colonne :
-- Il n'y a **pas de singleton** (Une des espèces est la seule à avoir une base spécifique à ce site et pas les autres
-- Il y a **au moins 2 espèces/séquences avec des bases différentes** pour ce site 
+- Il n'y a **pas de singleton**
+	- Une des espèces est la seule à avoir une base spécifique à ce site et pas les autres
+- Le site n'est **pas complètement conservé** (pour toutes les espèces)
+	- Il faut au moins 2 espèces/séquences avec des bases différentes pour ce site 
+
+
+## La saturation mutationnelle
+- Temps long=> des substitution se produisent. Si on prend une séquence d’ARN, il y a des substitution qui se produisent régulièrement alors il est possible qu’une même position ait changée plusieurs fois =>perte du signal.
+
+Ce phénomène de perte=> saturation substitutionnelle donc on sature le signal.
+
+On a des solutions de 3 types face à cette perte :
+- Augmenter le jeux de données=> augmenter le matériel, avoir plus de séquences= augmenter l’échantillonnage taxonomique (faire des arbres pour chaque marqueurs)
+- Des séquences plus longues=favoriser des grands gènes 
+- Travailler sur les méthodes pour trouver celles qui peuvent extraire les substitutions les plus anciennes=>qui désaturent.
+
+Si il y a peu de séquences=>risque d’avoir un manque de signal qui empêche de conclure, mais aussi d’induire des relations robustes mais qui ne le sont pas.
+
+L’inférence des arbres individuels peut se faire par des méthodes classiques, mais pour les combiner il faut utiliser des algorithme précis( ex : MRP). L’idée c’est de combiner les marqueurs entre eux avant l’analyse phylogénétique. On a donc un super-alignement qu’on analyse par méthodes classiques.
+
+Avantage d’un arbre individuel=> peut être inféré par des paramètres optimaux.
+
+On fait l’hypothèse que tous les gènes ont la même histoire évolutive pour les super-arbres=> plus grosse limitation lors du regroupement des séquences. Avant de combiner les séquences il faut inférer les arbres individuels voir s' il y a des similitudes. Si il y a des trop fortes discordances, on n'a pas le droit de les combiner. La méthode la plus utilisée reste celle de super-matrices.
+
+Augmenter le nb des séquences et la longueur fonctionne mais n’est pas suffisant il faut s’améliorer sur les méthodes.
+
+Lorsqu’on passe au niveau nucléique pour la construction d’arbre, on a plus de matériel (codons) et les séquences nucléiques évoluent plus vites que les séquences protéiques 🡪 dû à la redondance du code génétique et les substitutions silencieuses, ou lorsque qu’une substitution se passe au niveau protéique (changement d’aa), il s’est peut-être produit plusieurs substitutions au niveau nucléique
