@@ -569,14 +569,19 @@
 				- Permet de faire des prédictions sur la distribution de la biodiversité le long de gradients (amont-aval, ordres des cours d’eau…)
 			- #### Patrons spatiaux de variation génétique
 				- ##### Types d'isolements
-					- ###### Isolement par la distance
+					- ###### Isolement par la distance (=IBD)
+						- Patron selon lequel la différenciation entre paires de populations augmente lorsque la distance entre ces populations augmente.
 						- Plus la distance entre populations est élevée, plus la différenciation génétique entre ces populations est grande
+					- **Patron DIGD (=Downstream Increase in Genetic Diversity)**
+						- Patron selon lequel la diversité génétique d’une espèce vivant dans un paysage fluvial augmente le long du gradient amont-aval (ce qui génère une accumulation de diversité génétique à l’aval).
 					- ###### Isolement par l'environnement
 					- ###### Isolement par les barrières
 					- ###### Isolement par la résistance
 					- ###### Isolement par le flux
 				- ##### Diversité génétique
 					- Diminution graduelle de la diversité génétique selon l’avancée du front de colonisation
+			- #### Modèles d'interpolation spatiales
+				- Les modèles d’interpolation spatiale sont des modèles qui génèrent des valeurs prédites pour une variable dépendante (ex. la richesse allélique dans ce cas) en fonction de données observées. Elles permettent de visualiser comment se distribue une variable, en projetant spatialement les valeurs prédites pour cette statistique.
 	- ## Design
 		- Prendre en compte l’échelle, la couverture spatiale, la résolution et la densité de l'échantillonnage
 		- ### Échantillonnage conventionnel Vs à l'échelle du paysage
@@ -875,8 +880,12 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 - # ==TP==
 	- ## ==Marie Fablet==
 		- ### Partie 1
+			- L'environnement dans lequel évoluent les gènes est souvent fortement structuré et ces structures sont hiérarchisées les unes par rapport aux autres : les gènes peuvent être dans des individus diploïdes, eux-mêmes dans des populations, ces populations sont dans des régions, des continents, etc. Les différentes structures de l'environnement isolent-elles génétiquement les sous-structures les unes des autres ?
+				- Il est possible de tenir compte de ces différents niveaux de structuration dans l'analyse des données par une décomposition de la variance des fréquences alléliques en fonction des différents niveaux à l'aide d'une ANOVA hiérarchique à effets aléatoires. C'est la méthode proposée par Cockerham en 1973, également appelée "méthode des Moments".
 			- Structure des fichiers
-				- 3 colonnes
+			- ![[Pasted image 20241210104554.png]]
+				- 3 (4) colonnes
+					- (Numéro de ligne)
 					- Indiv
 						- Identifiant de l'individu
 					- Pop
@@ -887,11 +896,12 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 					- 1 allèle = 1 haplotype
 					- ==> Pour indiv diploïdes ==> 2 lignes
 			- Pour chaque individus on a 2 allèles et pour chaque pop, on a le même nombre d'indiv
+				- ![[Pasted image 20241210105038.png]]
 				- C'est un plan complet équilibré
 					- Il y a 6 pop
 					- Il y a 100 individus par pop = 600 au total
 				- Le plan de l'expérience est hiérarchique
-					- La modalité d'un individu dépend d'une population
+					- La modalité d'un individu dépend d'une population qui elle meme depend de la region qui elle meme depend du continent... Etc
 				- ![[image_1732886381923_0.png]]
 				- On va estimer les $\sigma²$
 				- ![image.png](../assets/image_1732886428256_0.png)
@@ -904,13 +914,13 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 					- $F_{it}$ intègre les 2 autres valeurs, on regarde au globale l'écart, c'est une synthèse globale, difficile à interpréter, il faut regarder le détail des 2 autres valeurs (fis et fst)
 				- Pour le modèle 2
 					- Il y a un écart globale car fit grand
-					- On reagrde le fis ==> Il est très faible (donc panmixie) et donc tout l'écart est du à ce qui est détecté par le fst
-					- Il y a une différenciation significative entre les population ==> Peu de flux de gène ==> Colle bien avec les données de l'énoncé (Population qui dispèrse peu)
+					- On regarde le fis ==> Il est très faible (donc panmixie --> IL n'y a pas d'excès ou de déficit en hétérozygotie comparé aux attendues sous l’équilibre de HW). Faible donc tout l'écart est du à ce qui est détecté par le fst
+					- Il y a une différenciation significative entre les population ==> Peu de flux de gène ==> Colle bien avec les données de l'énoncé (Population qui disperse peu)
 				- Pour le modèle 3
 					- fit grand ==> Très grand écart dans le cadre de Hardy Weinberg on regarde les autres valeurs
 					- fst faible ==> Pas de différenciation entre les pop, beaucoup de flux de gène
-					- fis grand ==> Pas de panmixie ==>  beaucoup d'appariement entre apparenté
-				- ==> Savoir la méthode cochérame, carré moyen à la variance, anova et obtenir les fit, fis, et fst
+					- fis $\ne 0$ ==> Pas de panmixie ==>  beaucoup d'appariement entre apparenté
+				- ==> Savoir la méthode Cochéram, carré moyen à la variance, anova et obtenir les fit, fis, et fst
 				- ==> Savoir interpréter biologiquement les fis, fst et fit
 		- ### Partie 2
 			- Localité dans les pays
@@ -930,8 +940,8 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 				```
 				- Colonne 6 c'est le premier locus
 				 ![image.png](../assets/image_1732891581376_0.png)
-				 - C'est différent de tout à l'heure car là on a beaucoup d'allele sur chaque locus (les micro-satellites ont beaucoup ++++++ d'allele) ==> Le taux de mutation \mu est très élevé et le StepWise mutation ne permet pas de remplir les conditions de Wright, on ne peut pas utiliser le Fst ==> On va utiliser le $\phi_{st}$ (marche tout le temps) qu'on obtient avec une AMOVA ou le $R_{st}$
-					 - Le stepwise mutation (mutation pas à pas, une mutation peu donner un allèle déja présent dans la pop) \ne Infinite Allele Mutation model (chaque mutation crée un nouvel Allèle)
+				 - C'est différent de tout à l'heure car là on a beaucoup d'allele sur chaque locus (les micro-satellites ont beaucoup ++++++ d'allele) ==> Le taux de mutation $\mu$ est très élevé et le StepWise mutation ne permet pas de remplir les conditions de Wright, on ne peut pas utiliser le Fst ==> On va utiliser le $\phi_{st}$ (marche tout le temps) qu'on obtient avec une AMOVA ou le $R_{st}$
+					 - Le stepwise mutation (mutation pas à pas, une mutation peu donner un allèle déja présent dans la pop) $\ne$ Infinite Allele Mutation model (chaque mutation crée un nouvel Allèle)
 		```r
 		1 - sum(p^2) # C'est Hs sur le premier locus
 		[1] 0.737893
@@ -941,7 +951,7 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 				 ![image.png](../assets/image_1732892312333_0.png)
 				 - La majorité des loci sont alléliquement très riches
 		 - Analyse génétique
-			 - Estimations de F_{stats}
+			 - Estimations de $F_{stats}$
 				```r
 				varcomp.glob(levels=worldhier[,1],worldhier[,2:21])
 				$loc
@@ -977,7 +987,7 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 				Pop   0.0000000 0.01660705
 				```
 				- `$overall`
-					- C'est les Variances (sigma²) comme tout à l'heure
+					- C'est les Variances ($\sigma²$) comme tout à l'heure
 				- `$loc`
 					- Variance par locus
 				- `$F`
@@ -1034,6 +1044,7 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 					cor(as.numeric(Htheo[,2]), distancesAfr$DistAA) ^2 
 					[1] 0.8028861
 					```
+					- a corrélation linéaire avec la distance à Addis Abeba explique 80% de la variabilité de la diversité génétique. La diversité génétique décroit significativement avec la distance à l'Est de l'Afrique, en accord avec un scénario d'effets fondateurs en série accompagnant la sortie d'Afrique et l'établissement des populations non-africaines.
 					- ==> Les pop avec le niveau de diversité le plus grande est les pop Africaine cela s'explique par les effets fondateurs en série
 						- A partir du site d'origine, un groupe migre à coté (effet fondateur -> derive génétique -> perte de diversité génétique) et à nouveau à chaque migration des pop dans un autre site
 						- A chaque nouveau effet fondateur, on accumule les effet fondateurs précédent et donc on accumule les pertes génétiques ==> Moins de diversité génétique
@@ -1053,7 +1064,15 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 						Colonne 1 à n = Allèles portés par l'individus pour les n marqueurs
 					Les 10 premiers chiffres de la ligne
 						08|10 => individu hétérozygote : 1 allèle 08 et un autre allèle 10 pour le gène Ca01
-			Question 2 :
+			Question 2 : 2) A votre avis, quel type d’analyses faudrait faire pour vérifier l’existence de ces deux patrons ? Quel type de données vous faudrait-il pour faire ces analyses ?
+				Il nous faut déjà sequences génomiques de plusieurs individus à différents endroits du paysage
+				Il faut que l'on choisisse des locus particuliers que l'on souhaite étudié, que l'on retrouve dans les autres espèces, facilement séquençable
+				Il faut ensuite trouver un modèle, un patron adapté à nos données, 
+				On peut utiliser des base de données (topographiques, activités humaines...) pour compléter notre analyse et avoir d'autres informations complémentaires
+				On calcul des métriques et statistiques
+					La richesse allélique moyenne (AR) par locus et par population
+					L’hétérozygotie attendue moyenne (He) par locus et par population
+					La richesse en allèles privés moyenne (PA) par locus et par population
 			Question 3 :
 				Gendata@tab
 					Est ce que l'allèle 01 du marqueur/locus Ca01 est présent (1) ou non (0)
@@ -1079,10 +1098,11 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 					Plus PA est élevé, plus elle a des allèles spécifique à cette pop, plus cette pop est unique => On a toute intérêt à préserver ces pop sinon on perd ces allèles
 			Question 5 :
 				![1686550a-0b7e-48bc-9b48-36e44d1f51d5.png](../assets/1686550a-0b7e-48bc-9b48-36e44d1f51d5_1733151262724_0.png)
-				Oui il semble y avoir un patron
-				L'aval est à gauche, on est proche de l'embouchure et on a le plus de diversité génétique
-				L'amont est à droite, on est loin de l'embouchure et on a le moins de diversité génétique
-				On a une accumulation de diversité génétique
+				Oui il semble y avoir un patron DIGD significatifs
+					L'aval est à gauche, on est proche de l'embouchure et on a le plus de diversité génétique
+					L'amont est à droite, on est loin de l'embouchure et on a le moins de diversité génétique
+					On a une accumulation de diversité génétique
+					Plus nous nous éloignons de l'embouchure (donc qu'on remonte de l'aval vers l'amont), plus on perd de la richesse allélique
 			Question 6 :
 				![40dd2ddf-14d8-4677-9663-f4524ee8c021.png](../assets/40dd2ddf-14d8-4677-9663-f4524ee8c021_1733151432683_0.png)
 				C'est pareil, He et AR sont très corrélé
@@ -1091,49 +1111,73 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 			Question 7 :
 				![b0a3dfeb-a296-4426-b7c8-f42db646f1d7.png](../assets/b0a3dfeb-a296-4426-b7c8-f42db646f1d7_1733151527215_0.png){:height 431, :width 718}
 			Question 9 :
+					Estimer les différences génétiques entre populations. Nous allons calculer des Fst par paires selon la méthode de Weir et Cockerham
 				![01f893ae-acf8-457b-90e6-9c5671ea3fe7.png](../assets/01f893ae-acf8-457b-90e6-9c5671ea3fe7_1733151564800_0.png){:height 431, :width 718}
 				![3551592d-9bc7-4cc3-bba4-456d7a9dedbe.png](../assets/3551592d-9bc7-4cc3-bba4-456d7a9dedbe_1733151584113_0.png){:height 431, :width 718}
-				On voit qu'il y a 2 populations qui sont bien différentes génétiquement des autres pop
+				On voit qu'il y a 2 populations qui sont bien différentes génétiquement des autres pop, les 2 bandes rouges
+				Lorsque des patrons IBDs (Isolement par la Distance) sont testés sur des milieux terrestres, une matrice de valeurs Fst (différenciation génétique) simple est mise en corrélation avec une matrice de distances euclidiennes entre populations. 
+				Dans un paysage fluvial, si l’espèce étudiée ne peut disperser qu’à travers les cours d’eau, il faut calculer des distances topographiques entre sites, c’est-à-dire des distance qui suivent la trajectoire des cours d’eau séparant les populations. Nous allons maintenant effectuer ces calculs grâce au package « riverdist », le fichier de couche spatiale représentant les principaux cours d’eau de l’étude (fichier « Rivers_corrected_3.shp ») et les coordonnées géographiques des populations (colonnes « X_Lamb93 » et « Y_Lamb93 ») dans la table « Tab data ».
 			![430fecf0-43b4-4561-bfce-5d5b6c81177a.png](../assets/430fecf0-43b4-4561-bfce-5d5b6c81177a_1733151606877_0.png)
 			On calcule la distance physique entre chaque point
 			![07d45bd6-dd70-481a-a7cc-9d8170e2361b.png](../assets/07d45bd6-dd70-481a-a7cc-9d8170e2361b_1733151624714_0.png){:height 449, :width 749}
-				On regarde a quelles point les points sont distant du réseau des rivières (les coordonnées GPS prises sur le terrain ne sont pas toujours super précises et pas forcément sur les coordonnées de la rivières => On utilise donc un snapping)
+				Le snapping = On regarde a quelles points les points sont distant du réseau des rivières (les coordonnées GPS prises sur le terrain ne sont pas toujours super précises et pas forcément sur les coordonnées de la rivières => On utilise donc un snapping)
 				On prend les points et les rapproche du cours d'eau le plus proche et après on peux calculer la matrice de distance
 				![75828d3d-bbd2-4c56-aa6f-312394b5a4db.png](../assets/75828d3d-bbd2-4c56-aa6f-312394b5a4db_1733151650152_0.png){:height 431, :width 718}
 			Question 10 :
 				![0fdff9d2-65e9-4ddb-bf90-8900b3c5feb0.png](../assets/0fdff9d2-65e9-4ddb-bf90-8900b3c5feb0_1733151668643_0.png)
 				Le mantel nous dit que c'est significatif et que le patron IBD est bien réel, plus les pop sont distantes plus elles sont différentes génétiquement
 				On a une augmentation générale de la diversité génétique en fonction de la distance entre chaque pop
+				D’autres paramètres peuvent affecter la différenciation entre populations. Par exemple, le flux du courant d’eau peut affecter la connectivité entre populations, et par conséquent, affecter leur différenciations génétiques. Ainsi, deux populations qui seront « connectées » directement par le flux de courant (en bleu dans la Figure 2) devraient être plus proches génétiquement que des populations situées à la même distance, mais « séparées par le flux du courant » (en rouge sur la Figure 2), car le courant peut exercer une force qui s’oppose aux flux de gènes.
+				![[Pasted image 20241210211213.png]]
 			Question 11 :
+				Nous allons maintenant faire des régressions multiples sur matrices (MRM), pour déterminer la contribution relative de la distance et de la connectivité par le flux sur la structuration génétique du chevaine. Nous utiliserons le package « ecodist ».
 				La mrm montre qu'il semble il y a voir un effet mais peu fort du courant
 
+
+
 	- ## ==Julien Varaldi = Spéciation==
-		- Question 1 :
-			- Les espèces ont des écologies similaires, morphologies...etc ==> Spéciation non écologique
-		- DDrad = Séquençage autour des sites de restrictions, polymorphisme du génome visible sans séquencer tout le génome
-		- Question 2 :
-			- Dans le modèle de Wright :
-				- On a une pop (p) qui contient 2 sous-pop (p1 et p2) qui chacune comporte plusieurs individus et dans chaque individus 2 allèles
-					-
-$$\bar{p} = \frac{p_1 + p_2}{2}$$					- Pour $p_{ 1}$ :
-						-
-$$Hétérozygotie_{Sous-pop1} = 2*p_1*q1$$					- Pour $p_{ 2}$
-						-
-$$Hétérozygotie_{Sous-pop2} = 2*p_2*q2$$					-
-$$\bar{HétérozygotieMoy_{Sous-pop}} = \frac{Hétérozygotie_{Sous-pop1} + Hétérozygotie_{Sous-pop2}}{2}$$					- Pour la Pop Totale :
-						-
-$$Hétérozygotie_{Pop-Totale} = 2 * \bar{p} * \bar{q}$$				- Et on peux calculer le taux d'hétérozygotie à ces différentx niveaux
-			-
-$$F_{st} = \frac{Hétérozygotie_{Pop-Totale} - \bar{HétérozygotieMoy_{Sous-pop}}}{Hétérozygotie_{Pop-Totale} } = \frac{Variance(p)}{\bar{p}*(1-\bar{p})} = ?$$			- Ici, on a :
-				- $p_{1} = \frac{2 * 12 +23}{54 * 2} = 0.43$
-				- $p_{2} = 0.58$
-				- $\bar{HétérozygotieMoy_{Sous-pop}} (\bar{H_s})= 0.49$
-				- $\bar{p} = 0.505$
-				- $Hétérozygotie_{Pop-Totale} (H_T) = 0.5$
-				- $Variance(p) = \frac{1}{2}*(0.43²+0.58²)-0.505²$
-			- $F_{st} = \frac{Hétérozygotie_{Pop-Totale} - \bar{HétérozygotieMoy_{Sous-pop}}}{Hétérozygotie_{Pop-Totale} } = \frac{0.5 - 0.49}{0.5} = 0.02$
-			-
-$$F_{st} = \frac{Variance(p)}{\bar{p}*(1-\bar{p})} = \frac{\frac{1}{2}*(0.43²+0.58²)-0.505²}{0.505*(1-0.505)} = 0.022$$				- C'est la formule brute de la variance : 1/N * Somme des carrés - moyenne carré...etc
+		- Exercice 1
+			- Question A :
+				- Les espèces ont des écologies similaires, morphologies...etc ==> Spéciation non écologique
+				- (DDrad = Séquençage autour des sites de restrictions, polymorphisme du génome visible sans séquencer tout le génome)
+			- Question B :
+				- On doit calculer le $F_{st}$ à la main
+				- Dans le modèle de Wright :
+					- On a une pop (p) qui contient 2 sous-pop (p 1 et p 2) qui chacune comporte plusieurs individus et dans chaque individus 2 allèles
+					- $F_{st} = \frac{Variance (p)}{\bar{p}*(1-\bar{p})}$ 
+					- $F_{st} = \frac{H_{T}-\bar{H_{S}}}{H_{T}} = \frac{Hétérozygotie_{Pop-Totale} - \bar{HétérozygotieMoy_{Sous-pop}}}{Hétérozygotie_{Pop-Totale} }$
+						- $Hétérozygotie_{Pop-Totale} = 2 * \bar{p} * \bar{q}$
+							- Fréquence moyenne de l'allèle 0 dans la pop totale --> $\bar{p} = \frac{p_1 + p_2}{2}$
+								- Fréquence moyenne de l'allèle 0 dans la pop 1 --> $p_{1}=\frac{2*freq(00)_{Pop_{1}} + 1*freq(01)_{Pop_{1}}}{2*N_{Total_{Pop_{1}}}}$
+								- Fréquence moyenne de l'allèle 0 dans la pop 2 --> $p_{2}=\frac{2*freq(00)_{Pop_{2}} + 1*freq(01)_{Pop_{2}}}{2*N_{Total_{Pop_{2}}}}$
+							- Fréquence moyenne de l'allèle 1 dans la pop totale -->  $\bar{q} = \frac{q_1 + q_2}{2}$
+								- Fréquence moyenne de l'allèle 1 dans la pop 1 --> $q_{1}=\frac{2*freq(11)_{Pop_{1}} + 1*freq(01)_{Pop_{1}}}{2*N_{Total_{Pop_{1}}}} = 1-p_{1}$
+								- Fréquence moyenne de l'allèle 1 dans la pop 2 --> $q_{2}=\frac{2*freq(11)_{Pop_{2}} + 1*freq(01)_{Pop_{2}}}{2*N_{Total_{Pop_{2}}}} = 1-p_{2}$
+						- $HétérozygotieMoy_{Sous-pop} = \bar{H_{S}} = \frac{Hétérozygotie_{Sous-pop1} + Hétérozygotie_{Sous-pop2}}{2}$
+							- Hétérozygotie pour $Pop_{ 1}$  -->  $Hétérozygotie_{Sous-pop1} = 2*p_1*q_{1}$
+								- Cf plus haut pour calcul $p_{1}$
+								- Cf plus haut pour calcul $q_{1}$
+							- Hétérozygotie pour  $Pop_{ 2}$  -->  $Hétérozygotie_{Sous-pop2} = 2*p_2*q_{2}$
+								- Cf plus haut pour calcul $p_{2}$
+								- Cf plus haut pour calcul $q_{2}$
+				- Ici, on a :
+					- $p_{1}=\frac{2*freq(00)_{Pop_{1}} + 1*freq(01)_{Pop_{1}}}{2*N_{Total_{Pop_{1}}}} = \frac{2 * 12 +23}{2 * 54} = 0.43$
+					- $p_{2} =\frac{2*freq(00)_{Pop_{2}} + 1*freq(01)_{Pop_{2}}}{2*N_{Total_{Pop_{2}}}} = \frac{2*24+23}{2*61} = 0.58$
+					- $q_{1}=\frac{2*freq(11)_{Pop_{1}} + 1*freq(01)_{Pop_{1}}}{2*N_{Total_{Pop_{1}}}} = \frac{2*19+23}{2*54} = 0.57$
+					- $q_{2}=\frac{2*freq(11)_{Pop_{2}} + 1*freq(01)_{Pop_{2}}}{2*N_{Total_{Pop_{2}}}} = \frac{2*14+23}{2*61} = 0.42$
+						- ==> $\bar{p} = \frac{p_1 + p_2}{2} = \frac{0.43+0.58}{2} = 0.505$
+						- ==> $\bar{q} = \frac{q_1 + q_2}{2} = \frac{0.57+0.42}{2} = 0.495$
+							- ==> ==> $Hétérozygotie_{Pop-Totale} = H_{T} = 2 * \bar{p} * \bar{q} = 2*0.505*0.495 = 0.49995$
+					- $p_1 = 0.43$, $p_2=0.58$, $q_1=0.57$, $q_2=0.42$
+						- $Hétérozygotie_{Sous-pop 1} = 2*p_1*q_{1} = 2*0.43*0.57 = 0.4902$
+						- $Hétérozygotie_{Sous-pop 2} = 2*p_2*q_{2} = 2*0.58*0.42 = 0.4872$
+							- ==> ==> $HétérozygotieMoy_{Sous-pop} = \bar{H_{S}} = \frac{Hétérozygotie_{Sous-pop1} + Hétérozygotie_{Sous-pop2}}{2} = \frac{0.4902+0.4872}{2} = 0.4887$
+					- ==> ==> ==> $F_{st} = \frac{Hétérozygotie_{Pop-Totale} - \bar{HétérozygotieMoy_{Sous-pop}}}{Hétérozygotie_{Pop-Totale} } = \frac{0.49995 - 0.4887}{0.49995} = 0.02$
+					- OU
+					- $Variance(p) = (\frac{1}{N}*\sum (p_{i})²) - (\bar{p})² = \frac{1}{2}*(0.43²+0.58²)-0.505² = 0.005625$
+						- C'est l'écart/ la différence entre la moyenne des carrés par rapport à la moyenne au carré
+					- ==> ==> ==> $F_{st} = \frac{Variance(p)}{\bar{p}*(1-\bar{p})} = \frac{0.005625}{0.505*(1-0.505)} = 0.022$
+			- ==> $F_{st} = 0.022$ --> Proche de 0 --> Beaucoup de flux de gènes entre les 2 populations & faible structuration et différentiation des 2 populations 
 		- Question C :
 			- On voit des pics de différenciation bien définis et séparés
 			- 1 pic de F_{ st} = Différence de fréquence allélique, il y a des fréquence d'allèles très différentes (elles ne sont pas fixée sinon on aurait atteint le 1). Les oiseau ne comporte pas les même fréquences d'allèles dans ces sites là
@@ -1246,17 +1290,17 @@ Fablet 2023-2024
 	        - ==> L’analyse STRUCTURE montre une différenciation nette entre les populations commerciales et sauvages pour K=2, avec des signes d’introgression dans les populations proches des fermes. Pour K=3, un troisième cluster distinct souligne une divergence génétique entre les populations commerciales non-natives et les populations sauvages. Ces résultats suggèrent un impact génétique des bourdons commerciaux sur les populations autochtones, principalement par flux génétique dans les zones proches des fermes, et principalement pour l'espèce dalmatinus.
 
 - ### **Question 3 : Interprétation des Fst (Tableau 1)**
-	- Le Fst mesure la différenciation génétique entre populations (0 = pas de différenciation, 1 = différenciation complète).
+	- Le Fst mesure la différenciation génétique entre **populations (PAS ESPÈCES)** (0 = pas de différenciation, 1 = différenciation complète).
 	- **Explication** :
-	    - Des Fst élevés entre populations sauvages et commerciales montrent une séparation génétique.
-	    - Des valeurs faibles entre certaines populations sauvages pourraient refléter une homogénéité ou un flux génique.
+	    - Des Fst élevés entre **populations (PAS ESPÈCES)** sauvages et commerciales montrent une séparation génétique.
+	    - Des valeurs faibles entre certaines **populations (PAS ESPÈCES)** sauvages pourraient refléter une homogénéité ou un flux génique.
 	- On voit que :
-		- Les espèces sauvages échantillonées à Bognor ne sont pas différencié génétiquement de celle de Broadway, celles de Treborth pas différencié de celles de Bognor et Templeton pas différencié de Broadway ==> Origine plutôt commune
-		- L'espèce commercial native
+		- Les espèces sauvages échantillonnées à Bognor ne sont pas différencié génétiquement de celle de Broadway, celles de Treborth pas différencié de celles de Bognor et Templeton pas différencié de Broadway ==> Origine plutôt commune
+		- La pop commercial native
 			- Est différencié de l'espèce commercial non native (peu de flux de gènes entre elles), et bien différencié avec les espèces sauvages (toutes confondues)
-		- L'espèce commercial non native
+		- La pop commercial non native
 			- Est bien différencié des espèces commerciales natives, encore mieux des espèces sauvages vivants proches des commerciales (Bognor, Broadway, Brockholes) et encore plus différencié des espèces sauvages vivant loin des commerciales. Il ne semble donc pas y avoir de flux de gènes entre ces espèces et de panmixie entre les populations ==> Elles sont bien différenciée
-		- L'espèce commercial dalmatinus
+		- La pop commercial dalmatinus
 			- On retrouve les même résultats que les espèces commercial, pas de flux de gène entre sauvages et commerciales, cependant on constate que les Fst sont moins forts comparé aux autres espèces commercial, mais cela reste significativement différent de 0, donc pas de flux de gène. Mais cette espèce semblent joué un rôle un peu plus pivot
 
 - ### **Question 4 : Analyse avec hierfstat**
@@ -1269,19 +1313,21 @@ Fablet 2023-2024
 		- La partie `$overall` présente la variance totale (individus, populations, erreurs).
 		- La partie `$F` décompose cette variance pour calculer des indices F (Fst, Fit, Fis) : 
 		- $F_{{it}}​ = \frac{\sigma²_{pop} + \sigma²_{ind}}{\sigma²_{pop} + \sigma²_{ind} +\sigma²_{error}} = \frac{9.491374 + 1.505261}{9.491374 + 1.505261 + 104.861109} = 0.0949$
-			- Proportion de la variance génétique totale qui est due à la différenciation entre individus, sans tenir compte des populations.
+			- On compare pas les individus entre eux, on compare l'hétérozygotie observée dans les sous-populations à l'hétérozygotie totale si on était aux proportions de Hardy Weinberg, et si $\ne 0$, c'est là qu'il y a un écart.
 			- Plus FIT​ est élevé, plus les individus dans l'ensemble des populations diffèrent les uns des autres (indépendamment de la population d'origine).
 		- $F_{\text{st}} = \frac{\sigma²_{pop}}{\sigma²_{pop} + \sigma²_{ind} +\sigma²_{error}} = \frac{9.491374}{9.491374 + 1.505261 + 104.861109} = 0.0819$
 			- Proportion de la variance génétique totale due à la différenciation entre les populations.
 			- **Interprétation :**
-				- FST​ proche de 0 : Les populations ne sont pas différenciées (fort flux génétique).
+				- FST​ proche de 0 : Les populations ne sont pas différenciées (fort flux génétique ENTRE LES POP) --> Forte structure entre les pop.
 				- FST​ proche de 1 : Les populations sont très différenciées (isolement reproductif ou faible flux génétique) ==> Il y a une forte structuration des populations
+				- On ne peut pas dire "deux populations avec un génome différent" mais plutôt : les fréquences alléliques sont différentes entres les populations.
 		- $F_{\text{is}} = \frac{\sigma²_{ind}}{\sigma²_{ind} +\sigma²_{error}} = \frac{1.505261}{1.505261 + 104.861109} = 0.0141$
 			- Déviation de l'hétérozygotie observée au sein des populations par rapport à l'hétérozygotie attendue sous un équilibre Hardy-Weinberg.
 			- **Interprétation :**
 				- FIS>0 indique un déficit en hétérozygotes dans les populations (inbreeding ou consanguinité locale).
 				- FIS<0 indique un excès d'hétérozygotes (Avantage sélectif pour les hétérozygotes, Lorsque deux ou plusieurs populations, initialement différenciées, se mélangent, et augmentent artificiellement la proportion d'hétérozygotes par rapport à l'équilibre attendu, mutations récentes, assortative mating (Des individus qui préfèrent s'accoupler avec des partenaires génétiquement très différents), Migration et flux génétique important).
-				- FIS=0 signifie que les populations respectent l'équilibre Hardy-Weinberg et donc manmixie.
+				- FIS=0 signifie que les populations respectent l'équilibre Hardy-Weinberg et donc panmixie.
+		- ==> Fst et Fis ne sont pas en contradiction; ces indices reflètent des composantes différentes de l'hétérozygotie. On peut tout-à-fait envisager que les croisements soient panmictiques au sein des populations (Fis=0) mais qu'il y ait peu de flux de gènes entre populations (Fst signif).
 	- #### b) **Test de significativité** :
 		- Un test (par permutation ou bootstrap) évalue si le Fst observé est significativement différent de 0.
 			- Permutation
@@ -1500,124 +1546,74 @@ PhyloG 2023-2024
 	    - Les espèces les plus proches (en termes de distances génétiques) devraient former des clades.
 	    - La position du groupe extérieur enracinera l’arbre.
 
-
+---
+---
 
 # ==Bonus==
 ## Synthèse sur le bootstrap en phylogénie
-
 #### 1. **Mise en place et calcul**
-
 - **Rééchantillonnage des données** : Les colonnes d’un alignement de séquences sont rééchantillonnées aléatoirement avec remplacement pour générer plusieurs jeux de données modifiés.
 - **Reconstruction d'arbres** : Un arbre phylogénétique est reconstruit pour chaque jeu de données rééchantillonné.
 - **Fréquence des regroupements** : Pour chaque regroupement (clade) dans l’arbre final, le pourcentage de fois où il apparaît dans les arbres reconstruits est calculé : c'est la valeur de **bootstrap**.
-
----
-
 #### 2. **Pourquoi un bootstrap élevé n'est pas synonyme de véracité**
-
 - Un bootstrap élevé indique uniquement que le **signal dans les données est cohérent et répétable**.
 - Cela ne garantit pas que ce signal reflète la **véritable histoire évolutive**. Des biais dans les données peuvent produire des regroupements erronés malgré un fort soutien.
-
----
-
 #### 3. **Ce que représente réellement le bootstrap**
-
 - Il mesure la **stabilité statistique** d’un regroupement dans l’arbre phylogénétique.
 - C’est une estimation de la **force du signal évolutif** dans le jeu de données utilisé.
 - Permet de savoir si une branche est statistiquement solide sur le jeu de données utilisé
-
----
-
 #### 4. **Interprétation des valeurs de bootstrap**
-
 - **Bootstrap élevé (≥ 70-80%)** : Regroupement statistiquement stable, fortement soutenu par les données, mais pas nécessairement correct.
 - **Bootstrap faible (< 50-60%)** : Regroupement peu fiable, nécessitant davantage de données ou des analyses complémentaires.
-
----
-
 #### 5. **Causes d’un bootstrap fort mais faux**
-
 - **Saturation mutationnelle** : Trop de mutations masquent les relations profondes (homoplasies).
 - **Biais systématiques** : Problèmes liés à des méthodes ou modèles inadéquats.
 - **Échantillonnage insuffisant** : Jeu de données trop petit ou déséquilibré.
 - **Signal évolutif trompeur** : Effets de longue branche (groupement incorrect de taxons très divergents).
-
----
-
 #### 6. **Doit-on considérer les bootstraps faibles ?**
-
 - Oui, car ils indiquent des zones de **faible confiance** où l'arbre pourrait être incorrect.
 - Ces régions peuvent nécessiter des analyses supplémentaires ou des données plus informatives.
-
----
-
 #### 7. **Solutions pour éviter de se tromper**
-
 - **Augmenter la taille du jeu de données** : Utiliser davantage de gènes ou de séquences.
 - **Modèles évolutifs appropriés** : Sélectionner des modèles capables de corriger les biais.
 - **Méthodes complémentaires** : Comparer les résultats avec des analyses bayésiennes ou d’autres approches statistiques.
 - **Utilisation de phylogénies de référence** : Vérifier la cohérence des résultats avec des phylogénies validées ou des données indépendantes.
 
-
-
-
-
-
+---
 
 ## L'attraction des longues branches (Long Branch Attraction, LBA)
 
 #### **Définition :**
 
 L’attraction des longues branches (LBA) est un artefact phylogénétique dans lequel des taxons très divergents, souvent avec de longues branches évolutives dans l'arbre, sont incorrectement regroupés ensemble. Ce regroupement erroné est dû à des similitudes dans les données, non pas parce qu’ils partagent un ancêtre commun proche, mais en raison de **taux de substitution élevés** qui masquent les vraies relations évolutives.
-
----
-
 #### **Pourquoi cela arrive :**
-
 1. **Saturation mutationnelle :**
-    
     - Lorsque des positions homologues dans un alignement accumulent trop de mutations indépendantes, les différences réelles entre les séquences deviennent difficiles à distinguer.
     - Cela conduit à des similitudes apparentes dues au hasard ou à des substitutions convergentes (homoplasies).
 2. **Effet statistique :**
-    
     - Les longues branches accumulent davantage de substitutions que les courtes branches.
     - Les méthodes phylogénétiques, en particulier celles basées sur la parcimonie ou des modèles inadéquats, peuvent confondre ces substitutions aléatoires comme un signal évolutif commun.
 3. **Modèles évolutifs simplifiés :**
-    
     - Des modèles d'évolution qui ne corrigent pas correctement les taux de substitution ou qui sous-estiment la variabilité du taux entre les sites peuvent amplifier l'effet de LBA.
-
----
-
 #### **Conséquences de la LBA :**
-
 - Les taxons avec des longues branches sont faussement placés comme proches parents, créant une phylogénie incorrecte.
 - Cela peut masquer les relations réelles avec d’autres taxons et produire des conclusions biologiques erronées.
-
----
-
 #### **Comment s’en prévenir :**
-
 1. **Utiliser des modèles d'évolution robustes :**
-    
     - Les modèles qui prennent en compte la variabilité des taux de substitution entre sites (par exemple, **modèles avec distribution gamma**) peuvent réduire l’impact de la LBA.
     - Optez pour des méthodes bayésiennes ou de maximum de vraisemblance plutôt que la parcimonie, qui est plus sensible à la LBA.
     - Sensibilité au LBA (du pire au mieux : Parcimonie > Distances > Max de vraisemblance et Bayésienne)
 2. **Augmenter le nombre de caractères :**
-    
     - Utiliser des alignements contenant davantage de séquences ou de gènes réduit l'effet des biais locaux et améliore la résolution globale.
 3. **Inclure des taxons intermédiaires :**
-    
     - Ajouter des taxons proches ou des groupes ayant divergé plus récemment aide à briser les longues branches, fournissant un meilleur contexte évolutif.
 4. **Tester pour l'effet de LBA :**
-    
     - Comparer des arbres générés avec différentes méthodes (parcimonie, maximum de vraisemblance, bayésien) peut révéler des regroupements suspects.
     - Analysez les regroupements inattendus et évaluez leur robustesse.
 5. **Filtrer les données fortement saturées :**
-    
     - Exclure les sites ou les gènes où la saturation mutationnelle est élevée peut limiter l’influence de la LBA.
 
-
-
+---
 
 ## Comment savoir si Les différences observées au niveau des topologies correspondent-elles à une absence de signal phylogénétique ou à la présence de signaux phylogénétiques conflictuels ?
 
@@ -1637,14 +1633,11 @@ L’attraction des longues branches (LBA) est un artefact phylogénétique dans 
 
 - Identifiez les **sites informatifs** dans l'alignement. Si ces sites favorisent des topologies différentes, cela indique des **signaux conflictuels**.
 
-
+---
 
 ![[Pasted image 20241208162633.png]]
 
-
-
-
-
+---
 
 ## Qu'est ce qu'un site informatif ?
 
@@ -1657,7 +1650,7 @@ Un site (colonne) d'un alignement multiple est informatifs ssi dans cette colonn
 - Le site n'est **pas complètement conservé** (pour toutes les espèces)
 	- Il faut au moins 2 espèces/séquences avec des bases différentes pour ce site 
 
-
+---
 ## La saturation mutationnelle
 - Temps long=> des substitution se produisent. Si on prend une séquence d’ARN, il y a des substitution qui se produisent régulièrement alors il est possible qu’une même position ait changée plusieurs fois =>perte du signal.
 
@@ -1679,3 +1672,124 @@ On fait l’hypothèse que tous les gènes ont la même histoire évolutive pour
 Augmenter le nb des séquences et la longueur fonctionne mais n’est pas suffisant il faut s’améliorer sur les méthodes.
 
 Lorsqu’on passe au niveau nucléique pour la construction d’arbre, on a plus de matériel (codons) et les séquences nucléiques évoluent plus vites que les séquences protéiques 🡪 dû à la redondance du code génétique et les substitutions silencieuses, ou lorsque qu’une substitution se passe au niveau protéique (changement d’aa), il s’est peut-être produit plusieurs substitutions au niveau nucléique
+
+---
+# Saturation mutationnelle des différents types de séquences
+
+En phylogénétique, une **séquence nucléique** est généralement plus rapidement saturée qu'une **séquence protéique**, pour plusieurs raisons liées à la manière dont les mutations s'accumulent et sont interprétées dans ces types de séquences :
+
+### 1. **Nombre de possibilités de mutations :**
+
+- **Séquences nucléiques (ADN ou ARN) :** Il n'existe que 4 bases nucléiques (A, T, C, G), ce qui rend les substitutions possibles plus limitées. Ainsi, à mesure que les mutations s'accumulent, les sites nucléotidiques atteignent plus rapidement un état de saturation (trop de substitutions masquent les informations phylogénétiques).
+- **Séquences protéiques :** Avec 20 acides aminés, il y a un espace de mutations beaucoup plus large. Cela signifie qu'il faut un plus grand nombre de mutations avant que la saturation soit atteinte.
+
+### 2. **Dégénérescence du code génétique :**
+
+- Plusieurs codons peuvent coder pour le même acide aminé (redondance du code génétique). Par conséquent, certaines mutations dans l'ADN n'entraînent pas de changement d'acide aminé (mutations synonymes), retardant la saturation au niveau de la séquence protéique.
+
+### 3. **Contrainte fonctionnelle :**
+
+- Les protéines sont soumises à des contraintes fonctionnelles importantes, ce qui limite les substitutions acceptables. Ainsi, dans une séquence protéique, seuls certains changements d'acides aminés seront conservés (les mutations non conservées sont éliminées par la sélection).
+- Les séquences nucléiques, en revanche, accumulent davantage de mutations neutres ou synonymes, accélérant leur saturation.
+
+### 4. **Applications phylogénétiques :**
+
+- Les séquences nucléiques sont utiles pour les analyses entre espèces proches, où le signal phylogénétique n’est pas encore saturé.
+- Les séquences protéiques sont préférées pour les analyses entre espèces distantes, car elles conservent mieux l'information phylogénétique sur de longues périodes évolutives.
+
+En résumé, **les séquences nucléiques se saturent plus rapidement que les séquences protéiques**, ce qui influence le choix des données en fonction de la distance évolutive entre les espèces étudiées.
+
+---
+
+# Modèles d'interpolation spatiales (CM IPV)
+Les modèles d'interpolation spatiale sont des méthodes mathématiques utilisées pour estimer des valeurs inconnues (comme des mesures environnementales) à des points non-échantillonnés, en se basant sur des valeurs connues à des emplacements échantillonnés. Ces modèles sont couramment utilisés dans les études paysagères, notamment en écologie, hydrologie, et géographie, pour produire des cartes continues à partir de données spatiales ponctuelles.
+
+### Types courants de modèles d'interpolation spatiale
+
+1. **Méthodes basées sur la distance** :
+    
+    - **Inverse Distance Weighting (IDW)** : Les valeurs sont calculées comme une moyenne pondérée inversement proportionnelle à la distance des points voisins.
+    - **Nearest Neighbor** : Chaque point inconnu reçoit la valeur du point connu le plus proche.
+2. **Méthodes géostatistiques** :
+    
+    - **Kriging** : Une méthode complexe qui utilise des modèles statistiques pour estimer les valeurs en intégrant la structure spatiale (variogramme).
+    - **Co-Kriging** : Une extension du Kriging qui inclut des variables auxiliaires.
+3. **Méthodes globales et polynomiales** :
+    
+    - **Polynômes locaux ou globaux** : Ajustent une fonction polynomiale aux données connues pour estimer les valeurs.
+4. **Méthodes basées sur les fonctions splines** :
+    
+    - **Thin-Plate Spline (TPS)** : Une méthode d'interpolation basée sur des splines qui minimise l'énergie d'une "plaque mince" virtuelle pliée pour passer à travers les points de données.
+
+### Qu'est-ce que le **Thin-Plate Spline (TPS)** ?
+
+Le TPS est une technique d'interpolation utilisée principalement pour des données à deux dimensions. Il est particulièrement utile pour des surfaces lisses et continues, comme dans la modélisation de phénomènes environnementaux ou dans les études géographiques.
+
+#### Principe
+
+- **Plaque mince** : Imaginez une fine plaque métallique que vous pliez pour qu'elle passe à travers tous les points de données connus. Le TPS minimise l'énergie potentielle nécessaire pour plier cette plaque, tout en s'assurant que la surface interpolée reste aussi lisse que possible.
+- **Minimisation d'une fonction d'énergie** : Le TPS recherche une fonction f(x,y)f(x, y)f(x,y) qui équilibre :
+    - La fidélité aux données observées (les points connus).
+    - La lissité de la surface interpolée.
+
+#### Fonction mathématique
+
+La fonction f(x,y)f(x, y)f(x,y) est une combinaison de :
+
+1. Une fonction polynomiale de faible degré (modèle global).
+2. Une somme pondérée de fonctions de base radiales ϕ(r)\phi(r)ϕ(r), où rrr est la distance radiale entre un point connu et le point d'interpolation.
+
+La fonction de base est souvent définie comme : ϕ(r)=r2ln⁡(r) où r est la distance euclidienne.
+
+#### Applications
+
+- Études environnementales : Cartographie des polluants, température, ou humidité.
+- Morphométrie : Alignement et analyse de formes biologiques.
+- Visualisation géographique : Modélisation des terrains ou des gradients spatiaux.
+
+#### Avantages et inconvénients
+
+- **Avantages** :
+    - Produit des surfaces très lisses et réalistes.
+    - Efficace pour les données continues avec une faible variance.
+- **Inconvénients** :
+    - Moins adapté aux données fortement hétérogènes ou discontinues.
+    - Plus coûteux en calcul que certaines alternatives.
+
+En résumé, le TPS est un outil puissant pour produire des surfaces interpolées lisses, utilisé fréquemment dans les études paysagères pour analyser et visualiser des phénomènes spatiaux.
+
+---
+
+
+La **spéciation** est le processus par lequel une population initialement inter-reproductible se divise en deux ou plusieurs espèces distinctes incapables de se croiser. Ce processus peut être influencé par différents mécanismes, qui se divisent souvent en deux grandes catégories : **écologique** et **non écologique**. Voici une explication détaillée des deux concepts.
+## **1. Spéciation écologique**
+### Définition
+La spéciation écologique se produit lorsque des populations se différencient en réponse à des pressions de sélection divergentes provenant de leur environnement. Ces pressions favorisent l'adaptation locale et entraînent une divergence phénotypique, génétique et reproductive.
+### Mécanismes
+- **Adaptation locale** : Les populations s’adaptent à différents environnements ou niches écologiques.
+- **Sélection divergente** : Des pressions sélectives différentes dans chaque environnement (par exemple, disponibilité de nourriture, température, prédateurs) favorisent des traits spécifiques dans chaque population.
+- **Isolement reproductif secondaire** : L’adaptation écologique peut entraîner une incapacité à se croiser efficacement avec des individus d'autres populations, car les hybrides sont souvent moins adaptés à leur environnement.
+### Exemples
+- **Cichlidés des lacs africains** : Ces poissons se spécialisent pour exploiter différentes niches écologiques, comme les zones rocheuses ou sablonneuses, ce qui a conduit à la formation de nombreuses espèces en raison de la sélection sur la morphologie de leur mâchoire.
+- **Pommiers et aubépines** : Les mouches du genre _Rhagoletis_ se sont différenciées en deux populations (pommiers et aubépines) en fonction des préférences de ponte, influençant leur spéciation.
+
+## **2. Spéciation non écologique**
+### Définition
+La spéciation non écologique se produit indépendamment des pressions sélectives environnementales. Elle résulte souvent de facteurs non liés à l'adaptation écologique, tels que la dérive génétique, les mutations, ou les barrières géographiques.
+### Mécanismes
+- **Isolement géographique (spéciation allopatrique)** : Des populations sont séparées physiquement par une barrière (montagne, rivière, glacier) et évoluent indépendamment. La divergence peut être due à des mutations aléatoires ou à des événements de dérive génétique.
+- **Effet fondateur** : Une petite population isolée, comme sur une île, subit des changements génétiques rapides en raison de sa taille réduite.
+- **Mutations chromosomiques ou comportementales** : Les changements dans la structure des chromosomes, le comportement d'accouplement, ou la temporalité des cycles de reproduction peuvent conduire à un isolement reproductif sans intervention écologique.
+### Exemples
+- **Souris des îles Galápagos** : Ces populations isolées géographiquement évoluent par dérive génétique et non par des pressions écologiques spécifiques.
+- **Plantes polyploïdes** : Dans certains cas, la spéciation est causée par une duplication complète du génome (polyploïdie), qui empêche les croisements avec les populations diploïdes parentes, sans pression écologique particulière.
+## **Différences clés**
+
+| **Aspect**                      | **Spéciation écologique**                  | **Spéciation non écologique**                    |
+| ------------------------------- | ------------------------------------------ | ------------------------------------------------ |
+| **Force motrice**               | Sélection naturelle liée à l'environnement | Facteurs non liés à l'adaptation écologique      |
+| **Pressions environnementales** | Cruciales (niches, ressources, habitats)   | Peu ou pas impliquées                            |
+| **Isolement reproductif**       | Résulte de l’adaptation divergente         | Résulte de barrières géographiques ou génétiques |
+| **Exemples fréquents**          | Divergence dans des habitats différents    | Dérive génétique dans des populations isolées    |
+
+En résumé, la **spéciation écologique** est un processus d'adaptation à différents environnements, tandis que la **spéciation non écologique** repose sur des mécanismes indépendants de l'environnement, comme les barrières géographiques ou la dérive génétique. Les deux processus peuvent parfois interagir ou se superposer dans des scénarios complexes.
