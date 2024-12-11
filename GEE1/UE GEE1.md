@@ -1433,7 +1433,11 @@ Varaldi 2023
 - ### **4. Interprétez la figure 2**
 	- Cette figure montre les résultats d’un GWAS (Genome-Wide Association Study) liant le génotype à des traits phénotypiques spécifiques.
 	- Les pics avec des valeurs de -log10(p-value) élevées (au-dessus du seuil de significativité) indiquent des SNPs associés de manière significative à un trait.
-	- Le zoom (Fig. 2A) met en évidence le gène RALY, suggérant qu’il joue un rôle clé dans les différences de plumage au niveau de "crown", "cheek", "breast yellow" et "flank".
+	- ==> On voit que 1 SNP, se trouvant de le gène RALY, est significativement associé au trait cheek, crown, flank et breast
+		- C'est le plus fort SNP associé au plus fort pic de différenciation
+		- Ce SNP est dans un intron du gène RALY
+		- Ce SNP se trouve dans un block de gène (ASIP-EIFS2-RALY) qui contrôle la pigmentation
+	- ==> Le zoom (Fig. 2A) met en évidence le gène RALY, suggérant qu’il joue un rôle clé dans les différences de plumage au niveau de "crown", "cheek", "breast yellow" et "flank" ==> C'est un gène pléiotropique = 1 gène qui affecte plusieurs traits morphologiques
 
 - ### **5. Interprétez la figure 3, en lien avec le phénotype et la fitness des hybrides**
 	- Cette figure montre une association entre le SNP dans le gène RALY et le phénotype des hybrides.
@@ -1441,6 +1445,7 @@ Varaldi 2023
 	- Les phénotypes hybrides peuvent influencer la **fitness**, en étant soit désavantagés (en cas de sélection disruptive), soit avantageux dans des conditions intermédiaires.
 	- Au niveau des parties Crown et Cheek il semble que les hybrides (OT) sont phénotypiquement plu proche des *occidentaliss* pur (OO) que des *townsendi* pur (TT)
 	- Les hybrides ont des phénotypes plus intermédiaires entre les 2 autres phénotypes purs
+	- ==> Les hétérozygotes dans ce block de gène ont une fitness réduites
 
 - ### **6. Décrivez l’indice Fst et interprétez les figures 4 et 5**
     - **Indice Fst** :
@@ -1450,10 +1455,30 @@ Varaldi 2023
         - Certains SNPs "outliers" (Fst > 0,6) révèlent des loci soumis à une forte sélection divergente.
     - **Figure 5** :
         - La fréquence de l’allèle "O" du locus en position 1981369 augmente progressivement dans la zone hybride, suggérant une introgression limitée ou une sélection contre certains génotypes.
+        - ==> Cette zone hybride est stable dans le temps mais très étroite, faible fitness pour ces hétérozygotes
 
 - ### **7. Que pouvez-vous dire concernant l’isolement reproducteur dans ce système ?**
 	- L’isolement reproducteur est partiel. Bien que les hybrides existent, des mécanismes tels que la sélection contre certains phénotypes hybrides ou la différenciation génétique (Fst élevé) à des loci spécifiques réduisent l’introgression.
 	- Les différences phénotypiques (ex. plumage) jouent probablement un rôle dans la reconnaissance et le choix du partenaire.
+	- ==> Même en dépit de flux de gène important entre des populations partout dans le génome, la selection de région génomique associé au phénotype (ici le plumage), aussi petite soit-elle (par exemple ici ~200 kb) est suffisante pour expliquer certaines variations phénotypiques différentes entre les pop, avec une selection négative (fitness moins bonne), pour les hybrides (hétérozygotes OT) pour ce locus ==> Et donc le maintien de manière stable la frontière entre 2 espèces 
+		- ==> **Signaux sociaux :** Le plumage n'est pas simplement un caractère phénotypique, mais il est utilisé comme un signal social **à l'intérieur des espèces et entre elles**, ce qui renforce son importance évolutive.
+		- **Bloc génétique :** Les trois gènes identifiés ne sont pas isolés, mais font partie d'un **bloc génomique** de 0,2 Mb, ce qui peut indiquer un lien physique ou fonctionnel qui facilite leur co-sélection.
+		-  **Durée de l'étude :** Le suivi sur deux décennies renforce la robustesse des conclusions en montrant que ce mécanisme est stable dans le temps.
+		- **Sélection contre les hybrides :** Une des conclusions majeures de l'article est que ce bloc génétique subit une sélection négative chez les hybrides, ce qui aide à **maintenir la divergence spécifique malgré un flux de gènes généralisé**.
+			- 1. Incompatibilités génétiques (modèle de Dobzhansky-Muller)
+				- Lorsque deux populations ou espèces divergent, des mutations se fixent indépendamment dans leurs génomes. Ces mutations fonctionnent bien dans leur propre contexte génétique, mais lorsqu'elles se retrouvent combinées dans un hybride (hétérozygote), elles peuvent interagir négativement.
+				- Ces interactions génétiques négatives peuvent perturber des processus biologiques essentiels, comme le développement, la reproduction, ou le métabolisme, réduisant ainsi la fitness de l'hybride.
+				- Exemple dans le cas des fauvettes : Les gènes du bloc génomique de 0,2 Mb (ASIP, EIF2S2, et RALY) pourraient interagir avec d'autres loci dans le génome, et ces interactions pourraient être spécifiques à chaque espèce. Chez les hybrides, ces interactions seraient perturbées.
+			- 2. Conflit phénotypique (hybrid breakdown)
+				- Les hétérozygotes peuvent présenter des caractéristiques intermédiaires, qui sont désavantagées dans le contexte écologique ou social des espèces parentales.
+				- Dans le cas des fauvettes, les traits de plumage intermédiaires pourraient ne pas être reconnus comme des signaux appropriés par les partenaires de reproduction ou pourraient les rendre moins efficaces dans des comportements sociaux spécifiques, comme la défense du territoire.
+				- Conséquences : Moins de succès reproductif ou d’intégration sociale pour les hybrides, donc une fitness réduite.
+			- 3. Sélection écologique
+				- Les hétérozygotes peuvent être mal adaptés aux niches écologiques des deux espèces parentales. Cela peut être dû à un compromis maladroit entre les traits des deux espèces, qui rend l’hybride sous-optimal dans tous les environnements.
+				- Dans les zones hybrides, les hybrides peuvent ne pas être compétitifs pour les ressources ou plus vulnérables aux prédateurs.
+			- 4. Déséquilibre de liaison et co-adaptation génomique
+				- Les gènes impliqués dans des traits adaptatifs (comme le plumage) sont souvent co-adaptés au sein des espèces parentales. Lorsqu'un hétérozygote hérite d’un mélange de gènes de chaque espèce, cela peut perturber cette co-adaptation.
+				- Dans le cas de blocs génétiques, si des gènes fonctionnent en synergie pour un phénotype spécifique (comme des traits de signalisation sociale), leur mélange dans un hybride peut casser cette synergie.
 
 ---
 
