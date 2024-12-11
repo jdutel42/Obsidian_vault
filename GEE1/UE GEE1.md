@@ -1479,6 +1479,7 @@ Varaldi 2023
 			- 4. Déséquilibre de liaison et co-adaptation génomique
 				- Les gènes impliqués dans des traits adaptatifs (comme le plumage) sont souvent co-adaptés au sein des espèces parentales. Lorsqu'un hétérozygote hérite d’un mélange de gènes de chaque espèce, cela peut perturber cette co-adaptation.
 				- Dans le cas de blocs génétiques, si des gènes fonctionnent en synergie pour un phénotype spécifique (comme des traits de signalisation sociale), leur mélange dans un hybride peut casser cette synergie.
+		- ==> C'est de l'isolement reproducteur (causé par des traits phénotypiques différents et des préférences sexuelles)
 
 ---
 
@@ -1921,3 +1922,40 @@ Le **ΦST** est calculé en utilisant les distances génétiques entre haplotype
 - **Formule générale :** ΦST=Variance entre populationsVariance totale\Phi_{ST} = \frac{\text{Variance entre populations}}{\text{Variance totale}}ΦST​=Variance totaleVariance entre populations​
     - La variance totale est la somme des variances "entre populations" et "au sein des populations".
     - Si la différenciation est forte, la variance "entre populations" est importante, augmentant ΦST vers 1.
+
+---
+
+Le fait qu'il y ait une forte différenciation sur les gènes **ASIP** et **RALY**, mais pas sur d'autres parties du génome, révèle plusieurs aspects importants de l'évolution et de la génétique des populations dans ce contexte :
+### **1. Sélection divergente localisée**
+
+La différenciation marquée sur ces gènes indique qu’ils sont soumis à une **forte sélection divergente** entre les deux espèces.
+
+- Ces gènes jouent probablement un rôle clé dans les différences adaptatives ou comportementales entre les espèces, ici principalement liées aux **traits de plumage** utilisés dans les signaux sociaux.
+- Les autres parties du génome, qui montrent peu ou pas de différenciation, ne sont pas sous pression sélective aussi forte et peuvent refléter un flux de gènes généralisé entre les espèces.
+
+**Interprétation :** Ces gènes sont des **hotspots de sélection**, essentiels pour maintenir les barrières reproductives malgré l'interfécondité globale.
+### **2. Flux de gènes génomique et compatibilité globale**
+
+- Une faible différenciation dans la majorité du génome montre que les deux espèces échangent des gènes dans ces régions, ce qui est typique dans les zones hybrides.
+- Cependant, le maintien de fortes différences dans des régions spécifiques comme celles contenant **ASIP** et **RALY** suggère que ces régions jouent un rôle clé dans la **spéciation écologique ou comportementale**.
+
+**Exemple dans les fauvettes :**  
+Les traits contrôlés par ces gènes, comme le plumage, peuvent directement affecter la reconnaissance des partenaires (assortative mating) et la signalisation sociale, ce qui réduit les chances de mélange complet des génomes.
+### **3. Bloc génomique co-adapté**
+
+La région de 0,2 Mb contenant ces gènes peut former un **bloc génomique co-adapté** :
+
+- Les gènes dans cette région sont peut-être physiquement liés, ce qui réduit la recombinaison entre eux.
+- Cela permet à cette région de se transmettre presque intacte à travers les générations, maintenant les adaptations spécifiques à chaque espèce.
+
+**Conséquence :** Ces blocs génomiques co-adaptés permettent aux espèces de maintenir des différences adaptatives même en présence d'un flux de gènes ailleurs.
+### **4. Différenciation réduite ailleurs : signatures de neutralité ou flux de gènes**
+
+- La faible différenciation sur le reste du génome peut refléter une absence de sélection forte sur ces régions ou un échange de gènes constant à travers les espèces.
+- Ces parties "neutres" du génome sont donc des zones où la dérive génétique et le flux de gènes dominent.
+### **5. Implications pour la spéciation**
+
+- Cette observation illustre un processus de **spéciation incomplète** ou **spéciation avec flux de gènes**.
+- La différenciation limitée à certaines régions génomiques critiques suggère que la divergence entre les deux espèces est maintenue principalement par la sélection sur des traits phénotypiques spécifiques, plutôt que par une isolation reproductive complète.
+
+En résumé, la forte différenciation des gènes **ASIP** et **RALY**, par opposition au reste du génome, indique qu’ils sont sous sélection positive pour des traits clés (plumage) liés à la reconnaissance sociale et sexuelle. Cela illustre comment une **spéciation peut être maintenue par des forces localisées** dans le génome, même en présence d’un flux de gènes global ailleurs.
