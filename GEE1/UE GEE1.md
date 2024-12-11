@@ -209,6 +209,7 @@
 			- Elle fournit des estimation des composantes de la variance et des analogues aux statistiques $F$, notés $\phi$
 			- C'est une ANOVA hiérarchique sur une matrice de distances entre paires d'haplotypes
 			- Cela convient pour tout type de données moléculaires
+			- On utilise des données d'haplotypes
 		- ### Principe
 			- On encode chaque haplotype sous forme de vecteur $p_i$ en binaire
 				- $0$ si absnece du marqueur
@@ -216,7 +217,9 @@
 			- On fait une matrice
 				- Colonnes = les différentes pop
 				- Lignes = Les différents vecteurs $p_i$ des marqueurs
+			- => ![[Pasted image 20241211165704.png]]
 			- On calcul les $\delta²_{jk}$ = carré de la distance entre les vecteurs $j$ et $k$ 
+				- La distance entre haplotypes = Nombre de différences entre haplotypes
 			- On obtient une matrice de pondération $D²$ qui regroupe toutes les paires
 			- Par analogie avec l'approche de Cockerham
 				- ![[Pasted image 20241130190859.png]]
@@ -987,9 +990,10 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 				Pop   0.0000000 0.01660705
 				```
 				- `$overall`
-					- C'est les Variances ($\sigma²$) comme tout à l'heure
+					- C'est les Variances cumulées ($\sigma²$) pour chaque loci comme pour l'ANOVA
+					- 
 				- `$loc`
-					- Variance par locus
+					- Variance pour chaque locus
 				- `$F`
 					- $F_{is} = 0.016$
 					- $F_{st} = 0.08$
@@ -1179,20 +1183,36 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 					- ==> ==> ==> $F_{st} = \frac{Variance(p)}{\bar{p}*(1-\bar{p})} = \frac{0.005625}{0.505*(1-0.505)} = 0.022$
 			- ==> $F_{st} = 0.022$ --> Proche de 0 --> Beaucoup de flux de gènes entre les 2 populations & faible structuration et différentiation des 2 populations 
 		- Question C :
-			- On voit des pics de différenciation bien définis et séparés
-			- 1 pic de $F_{ st}$ = Différence de fréquence allélique, il y a des fréquences d'allèles très différentes (elles ne sont pas fixée sinon on aurait atteint le 1). Les oiseau ne comporte pas les même fréquences d'allèles dans ces sites là
+			- Panel A
+				- On voit des pics de différenciation bien définis et séparés = Îlot de différenciation
+				- 1 pic de $F_{ st}$ = Différence de fréquence allélique, il y a des fréquences d'allèles très différentes (elles ne sont pas fixée sinon on aurait atteint le 1). Les oiseau ne comporte pas les même fréquences d'allèles dans ces sites là
+			- Panel E :
+				- C'est un zoom du scan génomique plus haut
+			- Panel F :
+				- On voit que nous avons un pic de différenciation ($F_{st}$ élevé) juste avant le site de transcription du gène 4A-EDA et 4A-Wnt, impliqué respectivement dans le développement et la coloration du plumage --> Ces loci fortement différenciés entre les pop (probablement des promoteurs différents) ne vont pas agir de la même manière sur ces gènes entre les 2 pop et donc le phénotype sera différent
+				- La différence sur l'ensemble du génome est faible mais on a la présence de pic intense → îlot de différenciation. Le Fst n’est jamais à 1 donc c’est des fréquence d’allèle très différente mais pas fixée. ça montre que ces oiseaux là sont particulièrement différents sur ces régions du génome qui code pour le plumage et les ailes. Ilots de différenciation = pics de Fst, 6 identifiés. Suggère que ces régions-là qui portent les gènes du plumage et coloration, elles expliquent que l’une porte une espèce de barbe noir sous le bec et l’autre jaune, conséquence qu’elles ne portent pas les mêmes allèles en fréquence dans ces régions là (avec Fst : indice de différenciation). 
 		- Question D :
 			- Plus les espèce sont séparé depuis longtemps, plus leurs distance mitochondriales et nucléaire seront différent ==> C'est attendue
-			- Il y a un très petit F_{ st} = elle est outlier. Elle a une divergence mito de 3 % on s'attendait donc à avoir un F_{ st} de 20%. Si ces espèces s'hybrident, les allèles vont pouvoir migrer d'une espèces a l'autre et homogénéiser les fréquence allélique ==> Il y a eu donc beaucoup d'hybridation entre les 2 espèces
+			- Il y a un très petit $F_{st}$ = elle est outlier par rapport à la droite représentant ce qu'on s'attendrait à avoir. Elle a une divergence mito de 3 %, pour une telle divergence on s'attendrait à avoir un $F_{st}$ de 20%, or ici il est plus proche des 1%. Si ces espèces s'hybrident, les allèles vont pouvoir migrer d'une espèces a l'autre et homogénéiser les fréquences alléliques ==> Il y a eu donc beaucoup d'hybridation entre les 2 espèces
+			- Un snp peut être fortement différencié même si il est pas directement impliqué dans le phénotype. Corrélation positive entre distance mitochondrial et Fst (logique c’est attendu) → plus les espèce se sont séparé y a longtemps niveau mitochondrial plus les fréquence allélique diverge (normal). le point rouge est en dehor de la corrélation Fst faible divergence mitochondrial élevé. Ceci est du au fait qu’il y a eu beaucoup d’hybridation entre les deux espèces → les allèles nucléaires passent de l’un à l’autre → homogénéisation des fréquences alléliques → Fst faible. Relation de corrélation positive entre Fst et distance des marqueurs mitochondriaux. Fst quasiment nulle pour les parulines alors qu’elle a une divergence mitochondriale de 3% (alors qu’on attend un Fst de 0.2 en moyenne au niveau nucléaire). 
 		- Question E :
-			- Il y a eu un phénomène qui a générer de la diversification au niveau des espèces naissantes (par exemple une barrière physique = allopatrie, voire aussi de la sélection sexuelle divergent entre ces espèces (sur des critère de plumage par exemple)), puis ensuite destruction de la barrière, les 2 pop se sont retrouvés et hybridé, et réduire la diversité génétique (baisse du F_{ st}), cette baisse est toutefois pas homogène sur tout le génome, elle ne concerne pas les locus impliqué dans la coloration du plumage, et cette différenciation au niveau de ces locus se maintient car il y a peut être une préférence pour les phénotypes qui sont similaires (homogamie très forte sur la coloration du plumage chez ces espèces de paruline). Cela n’empêche pas d'avoir des hybrides stables, fertiles, et peuvent continué à faire le passage des allèles
-		- Exercice 2
-			- Une inversion dans un génome (par exemple les gène A, B et C sur un locus deviennent C', B', A') à pour conséquence d’empêcher les recombinaison génétiques, les gènes sur les 2 chromosomes vont muté chacun mais on retrouveras toujours A, B avec C, et A', B' et C' ensemble, ces 3 allèles vont former une sorte de méga-allèle qui ne sera jamais recombiné
-			- Question A :
-				- Peut être que la pomme est présent plus tôt que l'aubépine, donc il faut être prêt plus tôt pour une mouche, et il faut donc les allèles qui sont adapté pour ça, donc fort déséquilibre ==> Ça suggère que les allèles étaient déjà présentes dans la population et ils sont monté très vite en fréquence quand le pommiers est apparues. Ce n'est pas que les allèles ont évolué, les allèles étaient déjà présent dans la pop (surement par hybridation). 2e preuve dans le tableau on voit que les allèles sont bien plus vieux que l’événement de spéciation en lui même. On avais donc déjà des allèles pré adaptés dans la population avant l’événement de spéciation
-			- Question B : ∅
-			- Question C : ∅
-			- Question D : ∅
+			- Il y a eu un phénomène qui a générer de la diversification au niveau des espèces naissantes (par exemple une barrière physique = allopatrie, voire aussi de la sélection sexuelle divergent entre ces espèces (sur des critère de plumage par exemple)), puis ensuite destruction de la barrière, les 2 pop se sont retrouvés et hybridé, et réduire la diversité génétique (baisse du $F_{st}$), cette baisse est toutefois pas homogène sur tout le génome, elle ne concerne pas les locus impliqué dans la coloration du plumage, et cette différenciation au niveau de ces locus se maintient car il y a peut être une préférence pour les phénotypes qui sont similaires (homogamie très forte sur la coloration du plumage chez ces espèces de paruline). Cela n’empêche pas d'avoir des hybrides stables, fertiles, et peuvent continué à faire le passage des allèles
+			- Depuis la spéciation à aujourd’hui, phénomène qui a généré de la diversification / divergence (allopatrie par exemple), peut s’ajouter d’autres phénomènes fréquents chez les oiseaux (sélection sexuelle divergent, sur des critères de plumage), puis rassemblement des deux écologies donc forte hybridation entre ces deux espèces, fait passer les allèles d’une espèce à l’autre donc baisse de différenciation et donc du Fst. Baisse de Fst non homogène (car observation de pics sur des locus impliqués dans la coloration du plumage typiquement). Il y a une préférence entre des individus similaires (homogamie positive très forte) sur la coloration du plumage, ce qui favorise le maintien de ces allèles et la différenciation très forte sur ces locus. Hybride viable et fertile, vont permettre le passage des allèles dans les deux espèces. Phénomène impliquant une différenciation des espèces (barrière géographique, sélection sexuel ou autre), Les deux aires géographique ce sont reconnecté et l’hybridation a eux lieux et donc réduction de la différenciation génétique. On de l’homogamie (sex avec individus qui se ressemble), les hybrides perdent l’avantage reproductif → maintiens des allèle impliqué dans les trait du plumage d’un coté et de l’autre de la barrière.
+	- Exercice 2
+		- Une inversion dans un génome (par exemple les gène A, B et C sur un locus deviennent C', B', A') à pour conséquence d’empêcher les recombinaison génétiques, les gènes sur les 2 chromosomes vont muté chacun mais on retrouveras toujours A, B avec C, et A', B' et C' ensemble, ces 3 allèles vont former une sorte de méga-allèle qui ne sera jamais recombiné
+		- Cas classique de spéciation parapatrique. 3 locus avec inversion + 1 loci mitochondrial
+		- Question A :
+			- Peut être que la pomme est présent plus tôt que l'aubépine, donc il faut être prêt plus tôt pour une mouche, et il faut donc les allèles qui sont adapté pour ça, donc fort déséquilibre (car inversion) ==> Ça suggère que les allèles étaient déjà présentes dans la population et ils sont monté très vite en fréquence quand le pommiers est apparues. Ce n'est pas que les allèles ont évolué, les allèles étaient déjà présent dans la pop (surement par hybridation). 2e preuve dans le tableau on voit que les allèles sont bien plus vieux que l’événement de spéciation en lui même. On avais donc déjà des allèles pré adaptés dans la population avant l’événement de spéciation
+		- Question B :
+			- Bleu : échantillons aux US, certains sur pommiers et d’autres sur aubépine. Phylogénie mitochondriale. Mexique en vert et aubépine 
+			- N <- aubépine (US)
+			- SN <- pommier (US)
+			- M <- aubépine (Mexique) 
+			- Les versions alléliques de ces genes sont plus proches de mexicaine que N, très surprenant --> Comment expliquer ça ? Aubépine plus précoce --> Suggère que ces allèles permettent de caler le cycle de développement des mouches sur celui du pommier. Monter en fréquence très vite une fois que le pommier a été introduit aux US, allèles étaient déjà présent plus d’un Ma dans les populations mexicaines du Sud, réarrangement puis augmentation en fréquence une fois que pommier aux US --> C'est étonnant que le race pommier des US qui bouffe pomme sont plus proche génétiquement de celle du Mexique.
+		- Question C :
+			- Monter en fréquence très vite une fois que le pommier a été introduit aux US, allèles étaient déjà présent plus d’un Ma dans les populations mexicaines du Sud, réarrangement puis augmentation en fréquence une fois que pommier aux US. La phylogénie suggère que les allèles permettant de caller le cycle de développement de la mouche au pommier était déjà présent sur les populations mexicaines et ont été diffuser très vite dans la population par croisement quand le pommier est arrivé. Les allèle qui ont permis l’adaptation au pommier était déjà là avant que le pommier soit introduit au US, elles sont juste monté en fréquence quand le pommier est arrivé.
+		- Question D :
+			- Les allèles sont en général bcp plus vieux que l’âge des spéciations.  On voit que l’age des allèles sont de manière général beaucoup plus vieux que les événement de spéciation. On a une explosion de leur fréquence dès leur que la nécessité point le bout de son nez.
 
 	- ## ==Aurore Galot==
 		- # Partie 1
@@ -1793,3 +1813,86 @@ La spéciation non écologique se produit indépendamment des pressions sélecti
 | **Exemples fréquents**          | Divergence dans des habitats différents    | Dérive génétique dans des populations isolées    |
 
 En résumé, la **spéciation écologique** est un processus d'adaptation à différents environnements, tandis que la **spéciation non écologique** repose sur des mécanismes indépendants de l'environnement, comme les barrières géographiques ou la dérive génétique. Les deux processus peuvent parfois interagir ou se superposer dans des scénarios complexes.
+
+---
+
+**Fst** et **PhiST** (ou **ΦST**) sont deux mesures utilisées en génétique des populations pour évaluer la différenciation génétique entre des sous-populations, mais ils diffèrent dans leurs méthodes de calcul et leurs interprétations. Voici les distinctions principales :
+### 1. **Fst (Fixation Index)**
+
+- **Définition :** Fst mesure la proportion de variation génétique totale qui est attribuable aux différences entre les sous-populations. C'est une mesure basée sur les fréquences alléliques.
+- **Base de calcul :**
+    - Comparaison des fréquences alléliques entre les sous-populations.
+    - Calculé généralement selon la formule : FST=HT−HSHTF_{ST} = \frac{H_T - H_S}{H_T}FST​=HT​HT​−HS​​ où :
+        - HTH_THT​ : Hétérozygotie attendue dans la population totale (diversité génétique totale).
+        - HSH_SHS​ : Hétérozygotie moyenne attendue au sein des sous-populations.
+- **Applications :** Souvent utilisé pour les données basées sur des marqueurs génétiques neutres comme les microsatellites ou SNP.
+- **Interprétation :**
+    - Fst varie entre 0 et 1 :
+        - FST=0F_{ST} = 0FST​=0 : Pas de différenciation (les populations partagent les mêmes allèles).
+        - FST=1F_{ST} = 1FST​=1 : Différenciation complète (les populations ne partagent aucun allèle).
+### 2. **PhiST (ΦST)**
+
+- **Définition :** ΦST est une extension de Fst qui intègre les distances génétiques entre les allèles ou les séquences génétiques, pas seulement leurs fréquences. Cela le rend particulièrement adapté pour les données de séquences (par ex., ADN mitochondrial, ADN nucléaire ou données de marqueurs moléculaires continus comme les AFLP).
+- **Base de calcul :**
+    - Basé sur les distances génétiques (p. ex., distances nucléotidiques ou distances évolutives).
+    - Estime la proportion de variance génétique entre les populations par rapport à la variance totale.
+    - Utilisé dans les analyses AMOVA (Analysis of Molecular Variance).
+- **Applications :** Approprié pour les données qui incluent des informations sur les relations évolutives entre les allèles ou séquences.
+- **Interprétation :**
+    - Comme Fst, ΦST varie entre 0 et 1, avec les mêmes interprétations (0 = pas de différenciation, 1 = différenciation complète).
+### 3. **Différences principales entre Fst et ΦST**
+
+|**Aspect**|**Fst**|**ΦST**|
+|---|---|---|
+|**Données utilisées**|Fréquences alléliques|Distances génétiques entre séquences|
+|**Méthode de calcul**|Basé sur l'hétérozygotie|Basé sur la variance moléculaire (AMOVA)|
+|**Type de données**|Marqueurs génétiques neutres (microsatellites, SNP)|Données de séquences (ADN, AFLP, RFLP)|
+|**Informations incluses**|Ne prend pas en compte les relations évolutives entre les allèles|Tient compte des distances évolutives ou moléculaires|
+|**Utilisation typique**|Études populationnelles simples|Études impliquant des distances génétiques complexes|
+
+### 4. **Quand utiliser Fst ou ΦST ?**
+
+- **Fst :** Pour des marqueurs simples où seules les fréquences alléliques comptent.
+- **ΦST :** Lorsque les relations phylogénétiques ou les distances entre séquences jouent un rôle important.
+
+En résumé, **Fst** est plus général et simple à calculer, tandis que **ΦST** est plus sophistiqué et adapté aux analyses basées sur les distances génétiques entre séquences. Votre choix dépendra des données et des objectifs de l'étude.
+
+---
+
+# Haplotype/Loci/AMOVA/ $\Phi_{st}$
+Comprendre ce qu'est un **haplotype**, son rôle dans les analyses génétiques, et comment il est utilisé pour calculer des métriques comme le **ΦST** à partir de données moléculaires nécessite de décomposer ces concepts. Voici une explication pas à pas.
+### **1. Qu'est-ce qu'un haplotype ?**
+Un **haplotype** est une combinaison d'allèles ou de séquences génétiques spécifiques trouvées sur un même chromosome qui sont transmises ensemble à travers les générations.
+- **En pratique :** Un haplotype est défini par des variations génétiques observées dans une région donnée du génome, comme des SNPs (Single Nucleotide Polymorphisms), des microsatellites, ou des séquences plus longues.
+    - Exemple : Si vous analysez trois SNPs dans une région génomique, et que vous observez les séquences suivantes :
+        - Individu 1 : A-C-T
+        - Individu 2 : A-T-T
+        - Individu 3 : G-C-T  
+            Ces combinaisons représentent différents haplotypes.
+### **2. Comment les haplotypes sont liés aux données moléculaires et aux loci ?**
+- **Données moléculaires :** Ce sont les observations expérimentales, comme des séquences d'ADN ou des profils de marqueurs. Elles permettent d'identifier les haplotypes dans une population.
+- **Loci :** Ce sont les positions spécifiques sur un chromosome où des variations génétiques (comme des SNPs ou des microsatellites) sont étudiées. Chaque locus peut contribuer à définir un haplotype.
+**Relation :**
+- À chaque locus, on peut observer des variations (différents allèles).
+- Un haplotype est une combinaison de ces allèles sur plusieurs loci.
+- Les données moléculaires permettent de reconstruire ces haplotypes pour chaque individu.
+### **3. Le calcul du ΦST via une matrice de distance**
+Le **ΦST** est calculé en utilisant les distances génétiques entre haplotypes pour quantifier la différenciation génétique entre populations. Voici les étapes principales :
+#### **Étape 1 : Identifier les haplotypes et les fréquences**
+1. Séquencez ou génotypez les individus dans chaque population.
+2. Déterminez les haplotypes présents dans les populations et leur fréquence.
+#### **Étape 2 : Calculer une matrice de distances entre haplotypes**
+- Utilisez une métrique de **distance génétique** pour comparer chaque paire d’haplotypes. Cela peut être basé sur :
+    - **Différences nucléotidiques** : Nombre de positions où les séquences diffèrent.
+    - **Distances évolutives** : Calculées à partir d’un modèle d’évolution moléculaire (par exemple, Kimura 2-Parameter, Jukes-Cantor).
+- Construisez une **matrice de distance** où chaque entrée représente la distance entre deux haplotypes.
+#### **Étape 3 : Analyse de variance moléculaire (AMOVA)**
+1. Partitionnez la **variance génétique totale** en trois composantes :
+    - **Entre populations** : Variance due aux différences entre les populations.
+    - **Entre individus dans une population** : Variance due aux différences entre les individus d'une même population.
+    - **Au sein des individus** : Variance interne.
+2. Ces variances sont estimées à partir des distances génétiques (via la matrice de distances) et des fréquences des haplotypes.
+#### **Étape 4 : Calculer ΦST**
+- **Formule générale :** ΦST=Variance entre populationsVariance totale\Phi_{ST} = \frac{\text{Variance entre populations}}{\text{Variance totale}}ΦST​=Variance totaleVariance entre populations​
+    - La variance totale est la somme des variances "entre populations" et "au sein des populations".
+    - Si la différenciation est forte, la variance "entre populations" est importante, augmentant ΦST vers 1.
