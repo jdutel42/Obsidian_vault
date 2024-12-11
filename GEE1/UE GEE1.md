@@ -1180,7 +1180,7 @@ $$d = \lambda * t$$							- $d$ = Distance évolutive
 			- ==> $F_{st} = 0.022$ --> Proche de 0 --> Beaucoup de flux de gènes entre les 2 populations & faible structuration et différentiation des 2 populations 
 		- Question C :
 			- On voit des pics de différenciation bien définis et séparés
-			- 1 pic de F_{ st} = Différence de fréquence allélique, il y a des fréquence d'allèles très différentes (elles ne sont pas fixée sinon on aurait atteint le 1). Les oiseau ne comporte pas les même fréquences d'allèles dans ces sites là
+			- 1 pic de $F_{ st}$ = Différence de fréquence allélique, il y a des fréquences d'allèles très différentes (elles ne sont pas fixée sinon on aurait atteint le 1). Les oiseau ne comporte pas les même fréquences d'allèles dans ces sites là
 		- Question D :
 			- Plus les espèce sont séparé depuis longtemps, plus leurs distance mitochondriales et nucléaire seront différent ==> C'est attendue
 			- Il y a un très petit F_{ st} = elle est outlier. Elle a une divergence mito de 3 % on s'attendait donc à avoir un F_{ st} de 20%. Si ces espèces s'hybrident, les allèles vont pouvoir migrer d'une espèces a l'autre et homogénéiser les fréquence allélique ==> Il y a eu donc beaucoup d'hybridation entre les 2 espèces
