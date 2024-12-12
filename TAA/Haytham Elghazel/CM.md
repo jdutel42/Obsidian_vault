@@ -1,4 +1,4 @@
-# <mark style="background: #FFB8EBA6;">Apprentissage automatique</mark>
+# <mark style="background: #BBFABBA6;">Apprentissage automatique</mark>
 
 - # Contexte
 	- ## Objectifs
@@ -23,9 +23,9 @@
 		- ### Arbres de décision
 			- #### Définition & Fonctionnement
 				- Processus récursif de division de l’espace des données en sous-régions de plus en plus **pures** en terme de classes.
-				- Décomposition d’un problème de classification en une suite de **tests** (**imbriqués**) portant sur **une variable (parallèle aux axes)** ou **une combinaison linéaire de plusieurs variables (oblique)**.
 				- Les tuples sont placés dans la classe associée à la sous-région qu’ils vérifient
 				- Différentes approches en fonction de la façon dont l’arbre est construit
+			- Décomposition d’un problème de classification en une suite de **tests** (**imbriqués**) portant sur **une variable (parallèle aux axes)** ou **une combinaison linéaire de plusieurs variables (oblique)**.
 			- #### Exemple
 				- On veut faire un decision tree répondant à l'objectif : **Déterminer si un client consultera son compte par Internet, en fonctions des données que l'on a sur lui**
 				- On a un échantillon d'apprentissage : ![[Pasted image 20241212184621.png]]
@@ -46,8 +46,10 @@
 								- 5 Non
 					- ###### Premier test
 						- On va privilégier les tests qui produisent des **feuilles pures** = Tout les individus sont dans une **même classe** ![[Pasted image 20241212185800.png]]
-							- ==> Regarder la variable R --> Pas de feuilles pures --> Pas discriminatoire et donc pas très intéressant de regarder
-							- ==> Regarder la variables A --> 2/3 des feuilles pures --> C'est plus intéressant (pour les branches jeunes et âgé)
+							- ==> Regarder/Tester la variable R --> Pas de feuilles pures --> Pas discriminatoire et donc pas très intéressant de regarder
+							- ==> Regarder/Tester la variable A --> 2/3 des feuilles pures --> C'est plus intéressant (pour les branches jeunes et âgé)
+						- Comment mathématiquement coder ça ?
+							- Cf Méthodes
 				- ##### Méthodes 
 					- ###### Entropie
 						- Définition
@@ -69,7 +71,182 @@
 						- Interprétation
 							- $Gini (p) = 0$ --> Pureté maximale = Toutes les données dans une seule classe
 							- $Gini (p) = 0.5$ --> Pour un ensemble binaire, indique une grande incertitude = Les classes sont réparties équitablement
+						- ==> On a des méthodes (Entropie et Gini) pour mesurer le désordre mais il faudrait une méthode pour savoir quel test choisir, quelle variables à tester
+							- ==> Fonction de gain
+					- ###### Fonction de Gain
+						- Définition
+							- Évaluer l'efficacité d'une division des données en fonction d'une caractéristique et mesure la réduction de l'incertitude (ou de l'impureté) après une division
+							- ![[Pasted image 20241212204357.png]]
+								- $p$ --> Position (avant la division)
+								- $test$ -> Variable que l'on test
+								- $P_{j}$ --> Fréquence totale d'individu/d'observation pour un nœud enfant donné de la variable à tester
+								- $i(p)$ ou $i(p_{j})$ --> $Entropie(p)$ ou $Gini(p)$ = Entropie ou Gini à la position p (avant la division) = Impureté du nœud parent ($i(p)$), ou nœud enfant ($p_{j}$)
+							- ==> Le test à choisir est celui qui possède le plus grand gain
+						- Exemple
+							- ![[Pasted image 20241212204721.png]]
+							- De la même manière :
+								- ($Gain(\in, M) =0.266$)
+								- $Gain(\in, A) =0.454$
+								- $Gain(\in, R) =0.016$
+								- $Gain(\in, E) =0.348$
+							- ==> Il faut mieux réaliser tester A (le plus grand gain)
+				- ##### Algorithme
+					- ![[Pasted image 20241212210523.png]]
+					- Pseudocode
+						- Input: Dataset (D), Liste des caractéristiques (Features), Critère d'impureté (Entropie ou Gini), Profondeur maximale (MaxDepth)
+						- Procedure DecisionTree(D, Features, CurrentDepth)
+							- Si tous les exemples dans D appartiennent à la même classe :
+								- Retourner une feuille avec la classe dominante.
+							- Si Features est vide OU CurrentDepth ≥ MaxDepth :
+								- Retourner une feuille avec la classe dominante dans D.
+							- Calculer l'impureté parentale (ex. Entropie ou Gini) pour D.
+							- Pour chaque caractéristique f dans Features :
+								- Diviser les données en sous-ensembles basés sur les valeurs possibles de f.
+								- Calculer l'impureté pondérée des enfants après la division.
+								- Calculer le Gain d'information pour f.
+							- Sélectionner la caractéristique (BestFeature) qui donne le Gain d'information maximal.
+							- Diviser D en sous-ensembles (Subsets) basés sur BestFeature.
+							- Créer un nœud interne pour BestFeature.
+							- Pour chaque sous-ensemble (Subset) obtenu :
+								- Si Subset est vide :
+									- Ajouter une feuille avec la classe dominante de D comme prédiction.
+								- Sinon :
+									- Ajouter un sous-nœud en appelant récursivement DecisionTree(Subset, Features - {BestFeature}, CurrentDepth + 1).
+							- Retourner le nœud construit.
+			- #### Évaluation
+				- Sur un nouveau jeu de donnée étiqueté, différent du jeu de donnée d'entrainement, on utilise l'algorithme pour prédire les labels -> On réalise la table de confusion et on calcule des métrique :
+					- L'accuracy
+					- L'erreur
+					- Le Rappel(Oui)
+					- La Précision(Oui)
+					- La F-mesure(Oui)
+				- ![[Pasted image 20241212213205.png]]
 
+
+# <mark style="background: #BBFABBA6;">Méthodes ensemblistes</mark>
+
+- # Définition
+	- Méthode qui combine les décisions individuelles de plusieurs hypothèses h1 , . . . , hT pour classer de nouveaux exemples.
+		- Un classifieur peut se tromper, un comité de classifieur **indépendant** à moins de chance de se tromper, on a un consensus
+	- Il faut cependant que :
+		- Les hypothèses construites ont un taux de succès meilleur que l’aléatoire (erreur<0.5 dans le cas de deux classes équilibrées).
+		- Les hypothèses présentent une certaine diversité.
+- # Types
+	- ## Hétérogènes
+		- Ensemble d'hypothèse produite par :
+			- **Des algorithmes différents ($L_{n}$) sur une même distribution ($D$) des exemples d'apprentissage ($A$)**
+			- *Ou...*
+			- **Un même algorithme mais avec des paramètres et/ou initialisation différentes**
+	- ## Homogènes
+		- ### Définition
+			- Ensemble d'hypothèse produite par un **même algorithme ($L$)** mais avec **des distributions ($D_{t}$) différentes ( tirages aléatoires, pondérations différentes...) dans la base d'apprentissage**
+			- Méthode générale et facilement applicable car basique
+		- ### Stratégies
+			- #### Boosting
+				- ##### Définition
+					- Utiliser une stratégie adaptative pour booster des performances, applicable à tout type d’algorithme (Réseau de neurones, CART, etc.)
+					- Méthode générale pour convertir des règles de prédiction peu performantes en une règle de prédiction (très) performante
+						- Étant donné un algorithme d’apprentissage L “faible” qui peut toujours retourner une hypothèse h de taux d’erreurs $\leq$ 0.5 - $\gamma$ (où $\gamma$ est l’amélioration de h par rapport à une décision aléatoire)
+						- Un algorithme de boosting peut construire (de manière prouvée) une règle de décision (hypothèse) de taux d’erreur $\leq$ e
+				- ##### Adaboost
+					- ###### Définition
+						- Adaptative Boosting
+						- Algorithme itératif pour l’ajout des classifieurs
+						- Variantes de la base d’apprentissage obtenues par des pondérations successives des mêmes exemples (calculées pour «se focaliser» sur les exemples «difficiles»)
+						- **On augmente l’importance des exemples mal-classés lors de l’itération précédente**
+						- ==> Combine plusieurs modèles faibles (**weak learners**) pour créer un modèle global plus performant (**strong learner**). L'objectif est de corriger les erreurs des modèles faibles successifs afin d'améliorer la précision globale.
+					- ###### Exemple
+						- Etape 0
+							-  ![[Pasted image 20241212221750.png]] 
+						- Etape 1
+							-  ![[Pasted image 20241212221811.png]]
+								- $\epsilon_{1}$ --> Erreur pondéré
+								- $\alpha$ --> Performance du modèle 
+							- Cinétique
+								- Un modèle est construit --> Il classe correctement 70% des données et se trompe sur 30% --> Les erreurs reçoivent des poids plus élevés.
+						- Etape 2
+							- ![[Pasted image 20241212221906.png]]
+							- Cinétique
+								- Un nouveau modèle est construit en se concentrant sur les exemples mal classés du premier modèle --> Il corrige certaines erreurs du premier modèle
+						- Etape 3
+							- ![[Pasted image 20241212221927.png]]
+						- Hypothèse finale
+							- ![[Pasted image 20241212221956.png]]
+							- Cinétique
+								- Les 3 modèles sont combinés en tenant compte de leur importance respective ($\alpha_{t}$).
+					- ###### Avantages
+						-  Performance élevée sur des tâches de classification.
+						- Pas de réglage complexe : Seul le nombre d'itérations TT doit être spécifié.
+						- Interprétable : Les poids $\alpha_{t}$ ​ montrent l'importance des modèles faibles.
+					- ###### Bilan adaboost
+						- ==> Utilisé un algorithme de classification (L) qui intègre le poids des individus dans la phase d'apprentissage
+							- ==> Par exemple : Arbre de décision, Réseaux de neurones, ...
+						- ==> A chaque itération t un nouvel échantillon d’apprentissage est considéré en sélectionnant au hasard avec remise $m$ exemples suivants les poids
+				- ##### Bilan Boosting
+					- ==> La puissance du boosting vient du ré-échantillonnage adaptatif
+					- ==> Réduit la variance
+					- ==> Réduit le biais en obligeant l'algorithme à focaliser sur les cas difficiles → hypothèse combinée beaucoup plus flexible
+					- ==> Convergence rapide
+					- ==> Sensible au bruit : les apprenants de base classent mal les exemples bruités ⇒ poids augmentent ⇒ sur-ajustement au exemples bruités
+			- #### Bagging
+				- ##### Définition
+					- Utiliser l’aléatoire pour améliorer les performances d’algorithmes de « faibles » performances. C’est applicable à différents algorithmes et RF est un aménagement spécifique à CART.
+					- Bootstrap aggregation
+					- Variantes de la base d’apprentissage obtenues par tirages aléatoires avec remise depuis la base initiale (sorte de «bootstrap»)
+						- Un ensemble de données « bootstrap » est un ensemble de données obtenu en sélectionnant au hasard avec remise m observations parmi les m observations de l’ensemble d’entraînement.
+						- Certaines observations sont dupliquées tandis que d’autres sont absentes; ce qui introduit une part d’aléatoire.
+					- L’intérêt de telle méthode est de répéter la procédure et d’utiliser chaque ensemble de données pour construire un modèle. Nous disposons alors de différentes réalisations de la statistique estimée (ou du modèle).
+				- ###### Principe
+					- Génération de k échantillons « bootstrap » par tirage avec remise dans l’ensemble d’apprentissage A= {(x1,y1), … ,(xm,ym)}.
+					- Pour chaque échantillon, apprentissage d’un classifieur en utilisant le même algorithme d’apprentissage
+					- La prédiction finale pour un nouvel exemple est obtenue par vote (simple) des classifieurs
+				- ###### Bilan Bagging
+					- ==> But
+						- Atténuer l'instabilité inhérente à certaines méthode de discrimination
+							- Si un changement mineur dans les données provoque un changement assez important de modèle = Méthode de discrimination instable 
+					- ==> Utile et efficace si algorithme de base utilisé est instable car différences entre variantes de base --> classifieurs élémentaires très différents
+					- ==> Évite l’overfitting (sur-apprentissage), car on a la «moyenne» des classifieurs construits avec différentes réalisations aléatoires des mêmes données.
+					- ==> Il est souvent dit que le bagging fonctionne en réduisant la variance en laissant le biais inchangé
+			- #### Random Forest
+				- ##### Principe
+					- Est ce qu’à partir d’un ensemble de faible classifieurs (arbres de décision) ont peut créer un classifieur plus performant?
+					- L’union fait-elle la force?
+						- La réponse est oui à condition que les arbres sont complémentaires.
+					- Le résultat sera donc autant plus intéressant que les arbres sont indépendants et le plus efficaces possible.
+					- On va construire un grand nombre d’arbres de décision différents pour un même problème: une forêt (forest).
+					- Pour construire une forêt on injecte de l’aléatoire: 
+						- On rajoute de l’aléatoire avant ou pendant la construction d’un arbre (Algorithme CART); on construit plusieurs arbres “randomisés”
+						- On agrège l’ensemble des arbres obtenus:
+							- Pour classer un individu on prend la décision finale par un vote majoritaire
+					- Pour rajouter l’aléatoire, RF combine la sélection aléatoire d'instances avec la sélection aléatoire de variables.
+						- On lance la construction de l’arbre sur un sous échantillon tiré aléatoirement : Breiman propose d’utiliser le bagging
+						- On tire à chaque nœud de l’arbre **mtry** variables uniformément et on cherche la “meilleure” coupure uniquement parmi ces variables-ci.
+						- Les arbres de décision sont complets : construits automatiquement sans pre- ou post-élagage.
+				- ##### Algorithme
+					- ![[Pasted image 20241212230942.png]]
+				- ##### Avantages
+					- Comme on tire aléatoirement les observations, une partie des observations non tirées (appelées OOB = Out Of Bag) serviront à 
+						- Évaluer en interne la forêt
+						- Estimer l'importance des variables pour la selections des variables
+				- ##### Évaluation
+					- Estimation de l'erreur en généralisation
+						- ![[Pasted image 20241212231518.png]]
+				- ##### Optimisation
+					- ![[Pasted image 20241212231553.png]]
+					- Le nombre optimal de variables dépend du nombre d'arbre dans la forêt mais globalement le plus optimal est 6 classes de variable
+				- ##### Applications
+					- ###### Clustering
+						- ![[Pasted image 20241212231929.png]]
+					- ###### Sélection de variables
+						- ![[Pasted image 20241212231946.png]]
+					- ###### Gestion des valeurs manquantes
+						- ![[Pasted image 20241212232009.png]]
+				- ##### Bilan Random Forest
+					- ==> Facile en utiliser
+					- ==> Sélection d'un sous-ensembles des observations
+						- ==> Gain de temps et de calcul
+						- ==> Grande diversité des modèles
+					- ==> Agrégation des valeurs ou classes prédites pour chaque modèles donne un classifieur robuste et précis
 
 
 
