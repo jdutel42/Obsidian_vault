@@ -1,6 +1,6 @@
 - # Détection d'anomalies
 	- ## Approches
-		- Détéction d'outliers
+		- Détection d'outliers
 			- Apprendre à détecter des anomalies dans le jeu de donnée initial en cherchant des régions denses tout en ignorant les anomalies
 		- Détection de nouveauté
 			- Ici le jeu de donnée pas pollué par les annomalies
