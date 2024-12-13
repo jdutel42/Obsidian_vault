@@ -300,120 +300,227 @@
 				- Permettent d'obtenir des perspectives différentes sur les performances d'un modèle, en particulier lorsque le jeu de données est déséquilibré
 			- #### Types
 				- ##### Micro-F1
+					- ###### Définition
+						- Elle prend en compte toutes les étiquettes ensemble comme si elles appartenaient à une seule classe. 
+						- Le F1-Score est calculé en agrégeant les vrais positifs (TP), faux positifs (FP) et faux négatifs (FN) sur toutes les étiquettes avant d'effectuer le calcul. 
+						- Cette métrique est particulièrement utile lorsque vous voulez accorder plus de poids aux classes fréquentes.
+					- ###### Calcul
+						- ![[Pasted image 20241213195702.png]]
+							- ![[Pasted image 20241213195732.png]]
 				- ##### Macro-F1
+					- ###### Définition
+						- Elle traite chaque étiquette indépendamment. 
+						- Elle calcule le F1-Score pour chaque étiquette individuellement, puis prend la moyenne arithmétique de ces scores. 
+						- Cette approche donne un poids égal à chaque étiquette, quel que soit le nombre d'occurrences de cette étiquette dans le jeu de données.
+					- ###### Calcul
+						- ![[Pasted image 20241213200113.png]]
+	- ## Algorithmes
+		- ### Méthodes d'adaptation
+			- #### Définition
+				- Méthodes adaptant les algorithmes de classification mono-label existants vers des algorithmes multi-labels, comme par exemple :
+					- MLkNN (k-plus proches voisins)
+					- PCT (Predictive Clustering Tree)
+		- ### Méthodes de transformation
+			- #### Définition
+				- Méthodes adaptant le problème multi-label en un ou plusieurs problèmes mono-label gérables avec des classifieurs traditionnels
+				- La prédiction finale du label se fera généralement par vote du label majoritairement prédit par tous les classifieurs
+			- #### Types
+				- ##### Méthode BR (= Binary Relevance)
+					- On transforme notre base d'apprentissage multi-label en plusieurs bases d'apprentissage mono-label --> Même features pour les individus mais à chaque fois un seul label et à chaque fois un label différent
+					- ![[Pasted image 20241213203133.png]]
+					- ###### Avantages
+						- Très simple car classifieurs standards
+						- Facilement scalable quand grand nombre de label
+					- ###### Inconvénients
+						- Ne prend pas en compte les dépendances et corrélations inter-labels
+						- Modèles déséquilibré si certains labels sont rares
+				- ##### Méthode Pair-wise
+					- Ici on crée plusieurs bases d'apprentissage avec les même features (comme avant) mais cette fois on créé un nouveau label reflétant l'interaction entre chaque paire de label possible
+						- Pour un nouveau label $\lambda'_{i,j}$ :
+							- Si $\lambda_{i} = 1 \Rightarrow \lambda'_{i,j} = 1$
+							- Si $\lambda_{j} = 1 \Rightarrow \lambda'_{i,j} = 0$
+					- On créé autant de nouveau label (et donc de base d'entrainement) qu'il y a de paire de label initial possible
+						- Si on a Q labels initials, on aura $\frac{Q*(Q-1)}{2}$ nouvelles bases d'entrainement mono-label avec les nouveaux labels 
+					- ![[Pasted image 20241213210339.png]]
+					- ###### Avantages
+						- Simple car classification binaire
+						- Précision élevée car chaque classifieur traite un problème binaire simple
+					- ###### Inconvénients
+						- Complexité car le nombre de classifieur augmente quadratiquement
+						- Parfois il y a des conflits de vote entre classifieurs
+				- ##### Méthode LP (= Label Power-set)
+					- Cette méthode va transformer les labels en créant un nouveau type de label pour chaque combinaison unique d'ancien labels possibles
+						- Il y a aura donc autant de classifieur qu'il y a de combinaison possible de label
+					- ![[Pasted image 20241213211454.png]]
+					- ###### Avantages
+						- Capture des dépendances inter-labels
+					- ###### Inconvénients
+						- Explosion combinatoire avec $2^L$ combinaisons possibles (L = Nombre label)
+						- Sensibilité aux données/combinaison de label rare
+		- ### Méthodes ensemblistes pures
+			- #### Random Forest Predictive Clustering Tree (RFPCT)
+				- ##### Concept
+					- RFPCT est une méthode dérivée des arbres de décision et des forêts aléatoires, spécifiquement adaptée pour les problèmes multi-étiquettes. Contrairement aux méthodes classiques, elle utilise des arbres de clustering prédictif (PCTs) pour construire un modèle qui peut prédire plusieurs labels simultanément, en capturant les relations entre les étiquettes.
+				- ##### Étapes principales :
+					- ###### Construction des PCTs :
+						- Chaque arbre est construit en considérant un critère d'impureté qui évalue non seulement la qualité de la séparation pour une étiquette, mais également pour toutes les étiquettes combinées.
+						- Les feuilles contiennent des distributions ou moyennes des labels multi-étiquettes.
+					- ###### Ensemble de forêts :
+						- Plusieurs arbres PCT sont entraînés sur des échantillons aléatoires (avec remplacement) des données.
+						- Chaque arbre prédit un ensemble d'étiquettes, et les prédictions sont agrégées (par exemple, par vote majoritaire).
+					- ##### Capture des dépendances entre labels :
+						- Contrairement à des forêts aléatoires standard, les RFPCTs tiennent compte des dépendances entre les étiquettes.
+				- ##### Avantages :
+					- Capture des corrélations entre les étiquettes.
+					- Utilisation efficace des relations hiérarchiques ou des dépendances dans les données.
+				- ##### Limites :
+					- Peut être coûteux en termes de calcul pour un grand nombre d'étiquettes ou d'arbres.
+			- #### Random k-label sets (RakEL)
+				- ##### Concept
+					- RakEL transforme un problème de classification multi-étiquette en un ensemble de problèmes de classification multi-classes. Il sélectionne aléatoirement des sous-ensembles de labels (appelés k-label sets) et entraîne des classificateurs indépendants sur ces sous-ensembles
+					- ![[Pasted image 20241213213947.png]]
+				- ##### Étapes principales :
+					- ###### Sélection des k-label sets :
+						- m sous-ensembles aléatoires de k étiquettes sont sélectionnés (k est un hyperparamètre).
+						- Par exemple, si k=3 et qu'il y a 5 étiquettes (L=5), chaque sous-ensemble pourrait contenir une combinaison comme {A,B,C}.
+					- ###### Transformation des étiquettes :
+						- Pour chaque k label set, toutes les combinaisons possibles des k étiquettes sont traitées comme des classes uniques (similaire à Label Power-set).
+					- ###### Entraînement des modèles :
+						- m modèles sont entraînés sur les différents k-label sets.
+					- ###### Prédiction :
+						- Lors de la prédiction, les modèles pour chaque k-label set sont utilisés, et les résultats sont combinés (par exemple, par vote majoritaire).
+				- ##### Avantages :
+					- Réduit la complexité combinatoire de la méthode Label Power-set (car on travaille sur des sous-ensembles aléatoires de labels).
+					- Améliore la capture des dépendances entre labels par rapport à des méthodes simples comme Binary Relevance.
+				- ##### Limites :
+					- La performance dépend du choix de k et du nombre de sous-ensembles m
+					- Peut être coûteux pour un très grand nombre de labels ou si k est trop grand.
+			- #### Ensemble Classifier Chain (ECC)
+				- ##### Concept
+					- ECC est une méthode d'ensemble basée sur la technique des Classifier Chains (CC). Dans la méthode CC, les étiquettes sont prédites séquentiellement, et chaque prédiction est utilisée comme caractéristique pour les prédictions suivantes. ECC étend cette idée en créant un ensemble de chaînes de classificateurs, chacune avec un ordre aléatoire des étiquettes.
+				- ##### Étapes principales :
+					- ###### Construction des chaînes :
+						- Plusieurs chaînes (M) de classificateurs sont créées, où chaque chaîne prédit les labels séquentiellement.
+						- Pour chaque chaîne, un ordre aléatoire des labels est utilisé.
+					- ###### Entraînement des chaînes :
+						- Chaque chaîne est entraînée sur les données d'entraînement, où les étiquettes précédentes dans la chaîne sont utilisées comme caractéristiques supplémentaires.
+					- ###### Prédiction :
+						- Lors de la prédiction, les M chaînes effectuent des prédictions indépendantes. Les prédictions finales sont agrégées, par exemple, en prenant une moyenne ou un vote majoritaire.
+				- ##### Avantages :
+					- Capture explicitement les dépendances entre les labels, en particulier celles qui sont ordonnées.
+					- Robuste et flexible, car chaque chaîne utilise un ordre aléatoire des labels.
+				- ##### Limites :
+					- L'ordre des labels peut influencer les performances.
+					- Peut être coûteux si le nombre de chaînes (M) est trop élevé ou si le nombre de labels est grand.
+	- ==> ![[Pasted image 20241213220231.png]]
 
+---
 
+# <mark style="background: #BBFABBA6;">Détection d'anomalies</mark>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-- # Détection d'anomalies
+- # Introduction
+	- ## Objectifs
+		- Identifier les instances ayant un comportement non conforme
+		- Supprimer ou modifier les observations atypiques à un modèle sans justification serait totalement contraire à l’éthique.
+		- L’objectif est avant tout de les identifier car ce sont celles, les plus susceptibles d’être la conséquence d’une erreur (à confirmer) de mesure, de libellé, ou encore une anomalie, défaillance ou tentative de fraude, d’intrusion, selon le contexte.
 	- ## Approches
-		- Détection d'outliers
-			- Apprendre à détecter des anomalies dans le jeu de donnée initial en cherchant des régions denses tout en ignorant les anomalies
-		- Détection de nouveauté
-			- Ici le jeu de donnée pas pollué par les annomalies
-			- Il faut detecter des anomalies dans les données futures non observées
-	- ## Méthodes
-		- ### Non supervisées
+		- ### Détection d'outliers
+			- Les données d’apprentissage contiennent des outliers et qui sont des observations qui se trouvent loin des autres.
+			- Il s’agit d’apprendre à détecter les anomalies dans le jeu de données initial en cherchant des régions denses (où les données sont le plus concentrées) tout en ignorant les anomalies.
+		- ### Détection de nouveauté
+			- Ici le jeu de donnée pas pollué par les anomalies
+			- Il s'agit de détecter des anomalies dans les données futures non déjà observées ==> Les outliers sont appelés nouveautés
+- # Méthodes
+	- ## Non supervisées
+		- ### Généralités
 			- Pas de labels fournis
 			- Base d'apprentissage = Données normales + anomalies
 			- Les anomalies sont très rares
-			- #### Types
-				- Approches basées sur le voisinages
-					- Local Outlier Factor
-						- Paramètres
-							- $D_k(x)$ = Distance par rapport à son k^{ie} plus proche voisin 
-							- $N_k(x)$ = L'ensemble de ses k plus proche voisin
-							- $R_k(x,y$ = Distance d’accessibilité de x par rapport à y comme étant le $max(d(x,y) et D_x(y))$
-							- $AR_k(x)$ = Distance d'accessibilité moyenne de x comme étant égale à la moyenne des distances d'accessibilité de x avec tous les points de son voisinage ($N_k(x)$)
-							- $f_k(x)$ = Densité d'accessibilité = Inverse de $AR_k(x)$
-								- Une instance normale est sensée avoir une densité locale similaires à ses voisins, alors q'une instance anormale est sensée avoir une beaucoup plus petite densité locale
-							- $LOF(x)$ = Moyenne du rapport $f_k(y)/f_k(x)$ pour tous les y dans $N_k(x)$
-								- Mesure l'écart local d'un point par rapport à ses k voisins les plus proches
-								- Si ce score est porche de 1, nous pouvons en conclure que l'observation est comparable à ses voisins
-								- Si ce score est $< 1$, nous pouvons dire que l'observation se trouve dans une région dense
-								- Dans les 2 cas, l'observation n'est pas considérée comme un outlier
-								- Un score est largement supérieur à 1 indique qu'on a à faire à un outlier
-						-  Utilisée pour la détection de nouveauté ou d'outliers
+		- ### Types
+			- #### Approches basées sur le voisinages
+				- ##### Définition
+					- L’anomalie ou l’isolement d’une observation est apprécié par la proximité des points de son voisinage
+				- ##### Local Outlier Factor
+					- ###### Définition
+						- Compare la densité locale des observations. S’il existe une différence entre le point observé et ses voisins, le point est considéré comme une anomalie. 
+						- Cette méthode est basée sur les k plus proches voisins : la densité locale d’une observation est évaluée en considérant les k plus proche observations de son voisinage.
+						- Utilisée pour la détection de nouveauté ou d'outliers
 						- Méthode très puissante
-					- One class SVM : Pour la détection de nouveauté
-						- Objectifs
-					- Isolation forest
-						- Principe
-							- Les anomalies sont rares et différentes ==> Elles sont donc susceptibles au mécanismes d'isolation
-							- Construction d'ensemble d'arbres complement aléatoires : isolation tree
-							- Chaque arbres est construit sur échantillon aléatoire des instances
-							- Divisions opéré dans chaque nœud via un filtrage aléatoire d'une variable et
-								- 1 seul
-								- ..........
-		- ### Supervisées
+					- ###### Calcul
+						- $LOF(x)$
+							- Moyenne du rapport $f_k(y)/f_k(x)$ pour tous les $y$ dans $N_k(x)$
+							- Mesure l'écart local d'un point par rapport à ses k voisins les plus proches
+								- $LOF(x) \sim 1$ --> Observation comparable à ses voisins
+								- $LOF(x) < 1$ --> Observation dans une région dense
+									- Dans les 2 cas ==> Observation $\ne$ Outlier
+								- $LOF(x) \gg 1$ --> Observation $=$ Outlier
+					- ###### Paramètres
+						- $D_k(x)$
+							- Distance d'un point x par rapport à son $k^{e}$ plus proche voisin 
+						- $N_k(x)$
+							- L'ensemble des k plus proche voisin d'un point x
+						- $R_k(x,y)$
+							- Distance d’accessibilité de x par rapport à y comme étant le $max(d(x,y) ; D_k(y))$
+						- $AR_k(x)$
+							- Distance d'accessibilité moyenne de x comme étant égale à la moyenne des distances d'accessibilité de x avec tous les points de son voisinage ($N_k(x)$)
+						- $f_k(x)$
+							- Densité d'accessibilité locale = Inverse de $AR_k(x)$
+								- Une instance/observation normale est sensée avoir une densité locale similaires à ses voisins
+								- Alors q'une instance anormale est sensée avoir une beaucoup plus petite densité locale 
+					- ###### Exemple
+						- ![[Pasted image 20241213235659.png]]
+						- ![[Pasted image 20241213235757.png]]
+				- ##### One class SVM
+					- Séparer toutes les observations, de l’origine, dans l’espace de représentation en maximisant la marge, à savoir la distance entre l’hyperplan et l’origine
+					- Pour la détection de nouveauté
+				- ##### Isolation Forest
+					- Principe
+						- Pour la détection d'outliers
+						- Les anomalies sont rares et différentes ==> Elles sont donc susceptibles au mécanismes d'isolation
+						- Construction d'ensemble d'arbres complement aléatoires : isolation tree
+						- Chaque arbres est construit sur échantillon aléatoire des instances
+						- Divisions opéré dans chaque nœud via un filtrage aléatoire d'une variable et
+							- 1 seul
+							- ..........
+	- ## Supervisées
+		- ### Généralités
 			- Labels à la fois pour les instances normales et anomalies
 			- Anomalies appartiennent à la classe rare
 			- Données déséquilibrées
 			- Adaptation des approches supervisées existantes
-			- #### Types
-				- Random Under-sampling et Random Oversampling
-					- Under-sampling
-							- Sous échantillonnage
-							- On diminue le nombre d'individus pour que les effectifs soient égaux
-							- ==> Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité ==> Il faut corriger les probabilité
-						- Oversampling
-							- Sur échantillonnage
-							- On va dupliquer aléatoirement certains individus
-							- ==> Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité ==> Il faut corriger les probabilité
-						- Balancing
-							- Pondération des classes
-							- On va utiliser ici un LogLoss pondéré pour calculer l'erreur de notre classifieur ==> On la veut à 0 ou proche
-				- SMOTE (Synthetic Minority Oversampling Technique)
-					- Approche d'oversampling
-					- Étapes
-						- ...........
-			- #### Évaluations
-				- Accuracy déconseillé
-				- Si on est intéressé par la classe en sortie
-					- Balanced accuracy
-						- Si on veut les classes positives et négatives
-					- F 1-score
-						- Si on est intéressé par la classe positive
-				- Si on est intéressé par les probabilités des classes en sortie
-					- AUC-ROC
-						- Si on est autant intéressé par les classe + que -
-					- AUC-PR (Average Precision Score)
-						- Calcul l'aire sous la courbe formée par les points ........
-						- Si on est plus intéressé par la classe +
-				- ==> Ne pas évaluer les modèles sur un échantillon équilibré
-				- ==> Les anomalies sont souvent complètement nouvelle ==> Le modèle ne pourra pas détecter les nouvelles anomalies sur lesquelles il n'a pas été entraîné
+		- #### Types
+			- Random Under-sampling et Random Oversampling
+				- Under-sampling
+						- Sous échantillonnage
+						- On diminue le nombre d'individus pour que les effectifs soient égaux
+						- ==> Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité ==> Il faut corriger les probabilité
+					- Oversampling
+						- Sur échantillonnage
+						- On va dupliquer aléatoirement certains individus
+						- ==> Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité ==> Il faut corriger les probabilité
+					- Balancing
+						- Pondération des classes
+						- On va utiliser ici un LogLoss pondéré pour calculer l'erreur de notre classifieur ==> On la veut à 0 ou proche
+			- SMOTE (Synthetic Minority Oversampling Technique)
+				- Approche d'oversampling
+				- Étapes
+					- ...........
+		- #### Évaluations
+			- Accuracy déconseillé
+			- Si on est intéressé par la classe en sortie
+				- Balanced accuracy
+					- Si on veut les classes positives et négatives
+				- F 1-score
+					- Si on est intéressé par la classe positive
+			- Si on est intéressé par les probabilités des classes en sortie
+				- AUC-ROC
+					- Si on est autant intéressé par les classe + que -
+				- AUC-PR (Average Precision Score)
+					- Calcul l'aire sous la courbe formée par les points ........
+					- Si on est plus intéressé par la classe +
+			- ==> Ne pas évaluer les modèles sur un échantillon équilibré
+			- ==> Les anomalies sont souvent complètement nouvelle ==> Le modèle ne pourra pas détecter les nouvelles anomalies sur lesquelles il n'a pas été entraîné
+			- 
 ---
 
 # ==Fouilles des données textuelles==
