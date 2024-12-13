@@ -122,6 +122,7 @@
 					- La F-mesure(Oui)
 				- ![[Pasted image 20241212213205.png]]
 
+---
 
 # <mark style="background: #BBFABBA6;">Méthodes ensemblistes</mark>
 
@@ -248,7 +249,58 @@
 						- ==> Grande diversité des modèles
 					- ==> Agrégation des valeurs ou classes prédites pour chaque modèles donne un classifieur robuste et précis
 
+---
 
+# <mark style="background: #BBFABBA6;">Apprentissage multi-label</mark>
+
+- # Introduction
+	- ## Définition
+		- C'est lorsque notre base d'apprentissage possèdent :
+			- Comme d'habitude :
+				- Des observations en lignes
+				- Des variables/features en colonnes
+			- MAIS...
+				- **Plusieurs labels/étiquettes** pour chaque individus
+	- ## Exemple
+		- ![[Pasted image 20241213085417.png]]
+	- ## Domaines d'application
+		- Catégorisation de texte
+		- Classification des fonctions génétiques
+		- Annotation sémantique des images, vidéos
+- # Apprentissage multi-label
+	- ## Représentation & Fonction de classification
+		- ![[Pasted image 20241213085728.png]]
+	- ## Métriques d'évaluation
+		- ### Hamming Loss
+			- #### Définition
+				- Mesure le taux d'erreurs par étiquette, en prenant en compte les FP (étiquettes incorrectement prédites) et les FN (étiquettes manquées)
+			- #### Calcul
+				- ![[Pasted image 20241213085955.png]]
+					- $N$ --> Nombre d'observations
+					- $Q$ --> Nombre d'étiquettes/labels
+					- $y_{ij}$ --> Étiquette réelle de l'individu $i$, et étiquette $j$
+					- $ŷ_{ij}$ --> Étiquette prédite de l'individu $i$, et étiquette $j$
+			- #### Exemple
+				- ![[Pasted image 20241213095051.png]]
+				- ![[Pasted image 20241213095156.png]]
+		- ### 0/1 Loss (Subset Accuracy)
+			- #### Définition
+				- Mesure si l'ensemble des étiquettes prédites pour un exemple/observation/individu correspond exactement à l'ensemble des étiquettes réelles. 
+				- Plus stricte que la Hamming Loss
+			- #### Calcul
+				- ![[Pasted image 20241213090442.png]]
+					- $Y_{i}$ --> Ensemble des étiquettes réelles pour l'individu/observation $i$
+					- $Ŷ_{i}$ --> Ensemble des étiquettes prédites pour l'individu/observation $i$
+			- #### Exemple
+				- ![[Pasted image 20241213095106.png]]
+				- ![[Pasted image 20241213095230.png]]
+		- ### F1-Score
+			- #### Définition
+				- Évaluer la performance d'un modèle. Il existe deux variantes principales pour calculer le F1-Score dans ce contexte Multi label : Micro F1 et Macro F1.
+				- Permettent d'obtenir des perspectives différentes sur les performances d'un modèle, en particulier lorsque le jeu de données est déséquilibré
+			- #### Types
+				- ##### Micro-F1
+				- ##### Macro-F1
 
 
 
