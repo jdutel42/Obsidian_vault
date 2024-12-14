@@ -474,86 +474,168 @@
 					- Séparer toutes les observations, de l’origine, dans l’espace de représentation en maximisant la marge, à savoir la distance entre l’hyperplan et l’origine
 					- Pour la détection de nouveauté
 				- ##### Isolation Forest
-					- Principe
+					- ###### Principe
 						- Pour la détection d'outliers
-						- Les anomalies sont rares et différentes ==> Elles sont donc susceptibles au mécanismes d'isolation
-						- Construction d'ensemble d'arbres complement aléatoires : isolation tree
+						- Les anomalies sont rares et différentes ==> Susceptibles au mécanismes d'isolation
+						- Construction d'ensemble d'arbres complement aléatoires ==> Isolation tree
 						- Chaque arbres est construit sur échantillon aléatoire des instances
-						- Divisions opéré dans chaque nœud via un filtrage aléatoire d'une variable et
-							- 1 seul
-							- ..........
+						- Divisions opéré dans chaque nœud via un filtrage aléatoire d'une variable et... :
+							- Si variable quantitative :
+								- Un seuil aléatoire
+							- Si variables qualitative :
+								- Une répartition aléatoire des modalités en 2 groupes
+							- La construction de l'arbre jusqu'à obtention d'1 observation/individu par feuille
+					- ###### Score
+						- Score de l’isolement ou de l’anomalie d’une observation est obtenue par **la longueur du chemin atteignant cette observation**
+						- Plus celui-ci est court, plus l’observation est considérée isolée ou atypique
+					- ###### Exemple
+						- ![[Pasted image 20241214002633.png]]
+						- ![[Pasted image 20241214002659.png]]
 	- ## Supervisées
 		- ### Généralités
 			- Labels à la fois pour les instances normales et anomalies
 			- Anomalies appartiennent à la classe rare
 			- Données déséquilibrées
 			- Adaptation des approches supervisées existantes
-		- #### Types
-			- Random Under-sampling et Random Oversampling
-				- Under-sampling
+				- Under-sampling / Oversampling / Balancing
+					- (Bibliothèque `imblearn`)
+		- ### Types
+			- #### Random Under-sampling et Random Oversampling
+				- ##### Under-sampling
+					- ###### Définition
 						- Sous échantillonnage
 						- On diminue le nombre d'individus pour que les effectifs soient égaux
-						- ==> Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité ==> Il faut corriger les probabilité
-					- Oversampling
+						- ![[Pasted image 20241214003625.png]]
+					- ###### Inconvénients
+						- Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité 
+							- ==> Il faut donc corriger les probabilités
+					- ###### Exemple
+						- Tomek Links
+							- ![[Pasted image 20241214004114.png]]
+				- ##### Balancing
+					- ###### Définition
+						- Pondération des classes
+					- On va utiliser ici un LogLoss pondéré pour calculer l'erreur de notre classifieur ==> On la veut à 0 ou proche
+				- ##### Oversampling
+					- ###### Définition
 						- Sur échantillonnage
 						- On va dupliquer aléatoirement certains individus
-						- ==> Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité ==> Il faut corriger les probabilité
-					- Balancing
-						- Pondération des classes
-						- On va utiliser ici un LogLoss pondéré pour calculer l'erreur de notre classifieur ==> On la veut à 0 ou proche
-			- SMOTE (Synthetic Minority Oversampling Technique)
-				- Approche d'oversampling
-				- Étapes
-					- ...........
-		- #### Évaluations
-			- Accuracy déconseillé
-			- Si on est intéressé par la classe en sortie
-				- Balanced accuracy
-					- Si on veut les classes positives et négatives
-				- F 1-score
-					- Si on est intéressé par la classe positive
-			- Si on est intéressé par les probabilités des classes en sortie
-				- AUC-ROC
-					- Si on est autant intéressé par les classe + que -
-				- AUC-PR (Average Precision Score)
-					- Calcul l'aire sous la courbe formée par les points ........
-					- Si on est plus intéressé par la classe +
-			- ==> Ne pas évaluer les modèles sur un échantillon équilibré
-			- ==> Les anomalies sont souvent complètement nouvelle ==> Le modèle ne pourra pas détecter les nouvelles anomalies sur lesquelles il n'a pas été entraîné
-			- 
+						- ![[Pasted image 20241214003856.png]]
+					- ###### Inconvénients
+						- Le classifieur risque d'apprendre dans un espace qui ne reflète pas la réalité =
+							- => Il faut corriger les probabilités
+					- ###### Exemple
+						- SMOTE (Synthetic Minority Oversampling Technique)
+							- ![[Pasted image 20241214004324.png]]
+							- Étapes
+								- 1. Sélectionner aléatoirement une observation minoritaire “initiale”.
+								- 2. Identifier ses k plus proches voisins parmi les observations minoritaires (où k est un paramètre défini par l’utilisateur)
+								- 3. Choisir aléatoirement l’un des k plus proches voisins.
+								- 4. Générer aléatoirement un coefficient ɑ.
+								- 5. Créer un nouvel individu entre l’observation initiale et le plus proche voisin choisi, selon la valeur du coefficient ɑ. Par exemple, si ɑ=0.5, le nouvel individu sera positionné à mi-chemin entre l’observation initiale et le plus proche voisin choisi.
+- # Évaluations
+	- Accuracy déconseillé
+	- Si on est intéressé par **la classe en sortie**
+		- Si on veut les **classes + et -**
+			- ==> **Balanced accuracy**
+		- Si on est intéressé par la **classe + uniquement**
+			- ==> **F 1-score**
+	- Si on est intéressé par **les probabilités des classes en sortie**
+		- Si on veut les **classes + et -**
+			- ==> **AUC-ROC**
+		- Si on est intéressé par la **classe + uniquement**
+			- ==> **AUC-PR (Average Precision Score)**
+				- Calcul de l'aire sous la courbe formée par les points de coordonnées (Rappel+, Précision+) en fonction du seuil (precision_recall_curve)
+				- ![[Pasted image 20241214005450.png]]
+	- ==> Ne pas évaluer les modèles sur un échantillon équilibré
+	- ==> Les anomalies sont souvent complètement nouvelle ==> Le modèle ne pourra pas détecter les nouvelles anomalies sur lesquelles il n'a pas été entraîné
+
 ---
 
-# ==Fouilles des données textuelles==
-- # Introduction
-	- Processus d'extraction non triviale d'info utiles inconnues a priori à partir de grands volumes de textes
-- # Préparation des données
-	- ## Pré-traitement des données textuelles
-		- Uniformisation du codage, élimination éventuelle de ceraines caractèe spéciaux
-	- ## Extraction d'informations
-		- Suppression des mot ignorés
-	- ## Extraction d'entités primaires
-	- ## Étiquetage grammaticale
-	- ## Extraction d'entités nommées
-		- Nom de personnes, lieux, organisation, dates qui ont un role important 
-- # Exploitation
-	- ## Représentation vectorielle des textes
-		- Elle prend les mot qui apparaisse le plus dans me texte mais ne prend pas en compte le contexte la grammaire et syntaxe ==> On perds beaucoup d'info
-		- Comparaison des vecteurs avec la distance cosinus :
-			- Le norme du vecteur étant proportionnelle à la longueur du texte
-		- On utilise parfois la similarité cosinus
-		- .......
-		- Évolutions de la représentation vectorielle de base
-			- Pondération des termes : TF-IDF
-				- Pondération les termes selon leur importance déterminé dans le texte
-				- On utilise le TF (Term Frequency) dans le document
-				- On multiplie le TD par IDF (Inverse Document Frequency) 
-					- C'est l'importance d'un terme pour tous les documents ..........
-					- Concept du LSA (=Latent Semantic Analysis)
-						- ........
-			- Sélection des termes : 
-			- 
-	- ## Développement de modèles
-	- ## Utilisation des modèles
-- # Challenges
-	- ## Résolution référentielle
-	- ## Analyse syntaxique (générale ou spécifique)
+# <mark style="background: #BBFABBA6;">Natural Language Processing</mark>
+
+- # Text Mining
+	- ## Introduction & Contexte
+		- ### Définition
+			- Processus d'extraction non triviale d'informations utiles inconnues a priori à partir de grands volumes de textes
+		- ### Spécificité
+			- Les données sont sous une forme qui n’est pas directement exploitable par les méthodes classiques de Machine Learning
+		- ### Objectifs
+			- #### Identification de thèmes
+				- Topic Modeling = Regroupement de (parties de) textes en thèmes inconnus a priori
+			- #### Affectation de textes (ou partie) à des catégories
+				- Dans des classes prédéfinies
+			- #### Recherche de "variables" explicatives pertinentes
+				- Utilisables ensuite conjointement avec d’autres variables (quantitatives, nominales)
+			- #### Extraction d'information
+				- Mise en correspondance des textes avec des « schémas » plus directement exploitables par des méthodes classiques de ML
+	- ## Applications
+		- Gestion de la relation client
+			- Détermination de catégories de clients à partir de leurs échanges avec le service client, redirection des courriels mal adressés
+		- Identification de l’objet des retours négatifs fréquents, détermination des causes majeures de l’attrition de clientèle
+		- Détermination de l’image d’une famille de produits
+		- Détermination des attentes majeures dans l’évolution des produits
+		- Identification de tendances à partir de messages postés sur des médias sociaux :  Produits ou familles de produits recherchés, caractéristiques recherchées pour des produits d’une certaine famille
+		- Analyse de comptes rendus médicaux
+		- Génération/Résumé de textes
+		- Traduction de textes
+	- ## Préparation des données
+		- ### Pré-traitement des données textuelles
+			- Uniformisation du codage, élimination éventuelle de certains caractères spéciaux (sauts de lignes, symboles, etc. suivant l’objectif), «traduction» de langage SMS...
+		- ### Extraction d'informations
+			- Suppression des "mot ignorés" (stop words)
+		- ### Extraction d'entités primaires
+			- Mots, éventuellement composés (« chauve-souris »), locutions nominales (« chemin de fer »), verbales (« arrondir les angles »)...
+		- ### Étiquetage grammaticale
+			- Caractérisation grammaticale de chaque composante du texte par une catégorie lexicale (ex. nom commun, nom propre, verbe, adverbe...) et une fonction (ex. sujet, complément d’objet direct...)
+		- ### Extraction d'entités nommées
+			- Noms de personnes, de lieux (« Mont Blanc »), d’organisations, dates... qui jouent souvent un rôle important dans les opérations d’analyse de textes.
+		- ### Lemmatisation ou Racinisation
+			- Remplacer chaque mot (par ex. « pensons ») par sa forme canonique (« penser ») ou par sa racine (« pense ») ; peuvent engendrer des confusions (par ex. « organ » pour « organe » comme pour « organisation »)
+			- Cette étape est utile car elle permet de traiter comme un mot unique les différentes variantes issues d’une même forme canonique ou racine
+			- ==> Racinisation (Stemming) suffisante pour l’anglais
+			- ==> Lemmatisation (lemmatization) mieux adaptée au français
+		- ### Représentation vectorielle des textes
+			- Pondération tf-idf, décomposition en valeurs singulières (SVD, LSA), analyse sémantique explicite (ESA), Word Embedding (plongement lexical) comme Word2vec, Bert, GPT, etc.
+		- ### Développement de modèles
+			- Sur la base du contenu textuel seul ou en ajoutant des variables quantitatives et nominales
+		- ### Utilisation des modèles
+			- Modèles développés, évaluation des résultats et interprétation
+	- ## Challenges
+		- ### Résolution référentielle
+			- Cherche à identifier l’entité, explicitement présente ailleurs dans le texte, par ex., à qui fait référence Il dans « Barack Obama est le 44e président des États-Unis. Il est né le 4 août 1961 à Honolulu »
+		- ### Analyse syntaxique (générale ou spécifique)
+			- De la négation (→ distinction entre affirmation et négation), « quantification » des adverbes (ex. « très abouti / plus ou moins abouti / peu abouti »)
+- # Représentation vectorielle des textes
+	- ## Objectifs
+		- Pouvoir manipuler des données textuelles avec les nombreux outils disponibles pour les espaces vectoriels
+	- ## Prérequis
+		- Au préalable, possible suppression des « mots ignorés » (stop words) : prépositions, conjonctions, articles, verbes auxiliaires...
+			- L’ensemble des mots à ignorer peut dépendre de l’objectif de l’analyse !
+			- Doit être appliquée seulement après l’extraction de locutions (ex. « chemin de fer »)
+	- ## Définition
+		- Modèle vectoriel de texte
+			- Affecter une dimension de l’espace à chaque terme (lemme, entité nommée...) trouvé dans la base de documents → chaque texte est représenté par un vecteur de grande dimension, (très) clairsemé.
+	- ## Exemple
+		- ![[Pasted image 20241214020441.png]]
+	- ## Représentations
+		- ### TF-IDF
+		- ### Test du $\chi²$
+		- ### LSA (Latent Semantic Analysis)
+	- 
+	- 
+	- Elle prend les mot qui apparaisse le plus dans me texte mais ne prend pas en compte le contexte la grammaire et syntaxe ==> On perds beaucoup d'info
+	- Comparaison des vecteurs avec la distance cosinus :
+		- Le norme du vecteur étant proportionnelle à la longueur du texte
+	- On utilise parfois la similarité cosinus
+	- .......
+	- Évolutions de la représentation vectorielle de base
+		- Pondération des termes : TF-IDF
+			- Pondération les termes selon leur importance déterminé dans le texte
+			- On utilise le TF (Term Frequency) dans le document
+			- On multiplie le TD par IDF (Inverse Document Frequency) 
+				- C'est l'importance d'un terme pour tous les documents ..........
+				- Concept du LSA (=Latent Semantic Analysis)
+					- ........
+		- Sélection des termes : 
+		- 
